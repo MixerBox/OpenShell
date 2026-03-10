@@ -433,6 +433,14 @@
 </section>
 <section id="step-1-create-a-github-provider">
 <h2>Step 1: Create a GitHub Provider<a class="headerlink" href="#step-1-create-a-github-provider" title="Link to this heading">#</a></h2>
+<div class="tip admonition">
+<p class="admonition-title">Already have a sandbox running?</p>
+<p>If you followed the Quickstart and already have a sandbox without a GitHub provider, you have two options:</p>
+<ol class="arabic simple">
+<li><p><strong>Add a provider to a new sandbox</strong> — delete the existing sandbox, create the provider below, and recreate the sandbox with <code class="docutils literal notranslate"><span class="pre">--provider</span> <span class="pre">my-github</span></code> in Step 3.</p></li>
+<li><p><strong>Set the token inside the sandbox</strong> — connect with <code class="docutils literal notranslate"><span class="pre">nemoclaw</span> <span class="pre">sandbox</span> <span class="pre">connect</span> <span class="pre">&lt;name&gt;</span></code> and run <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">GITHUB_TOKEN=&lt;your-token&gt;</span></code>. This skips the provider workflow but the token is not persisted across sandbox recreations.</p></li>
+</ol>
+</div>
 <p>Create a provider that reads your GitHub token from the environment:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nemoclaw<span class="w"> </span>provider<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>my-github<span class="w"> </span>--type<span class="w"> </span>github<span class="w"> </span>--from-existing
 </pre></div>

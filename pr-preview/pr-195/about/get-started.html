@@ -430,20 +430,40 @@
 </pre></div>
 </div>
 </section>
+<section id="connect-to-a-gateway">
+<h2>Connect to a Gateway<a class="headerlink" href="#connect-to-a-gateway" title="Link to this heading">#</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Local (Docker)</label><div class="sd-tab-content docutils">
+<p>If Docker is running on your machine, the CLI creates a local gateway automatically when you create your first sandbox. No additional setup is needed — skip to the next step.</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Remote (Brev)</label><div class="sd-tab-content docutils">
+<p>Deploy an OpenShell gateway on Brev with the <a class="reference external" href="https://brev.nvidia.com/launchable/deploy/now?launchableID=env-3AaK9NmCzWp3pVyUDNNFBt805FT" rel="noreferer noopener" target="_blank">OpenShell Launchable</a>, then connect to it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nemoclaw<span class="w"> </span>gateway<span class="w"> </span>add<span class="w"> </span>&lt;your-brev-instance-url&gt;
+<span class="gp">$ </span>nemoclaw<span class="w"> </span>status
+</pre></div>
+</div>
+<p>Once <code class="docutils literal notranslate"><span class="pre">nemoclaw</span> <span class="pre">status</span></code> shows the gateway as healthy, all subsequent commands target that remote instance.</p>
+</div>
+</div>
+</section>
 <section id="create-your-first-openshell-sandbox">
 <h2>Create Your First OpenShell Sandbox<a class="headerlink" href="#create-your-first-openshell-sandbox" title="Link to this heading">#</a></h2>
 <p>Choose the tab that matches your agent:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-0">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
 Claude Code</label><div class="sd-tab-content docutils">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nemoclaw<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--<span class="w"> </span>claude
 </pre></div>
 </div>
 <p>The CLI prompts you to create a provider from local credentials — type <code class="docutils literal notranslate"><span class="pre">yes</span></code> to continue. If <code class="docutils literal notranslate"><span class="pre">ANTHROPIC_API_KEY</span></code> is set in your environment, it is picked up automatically. If not, you can configure it from inside the sandbox after it launches.</p>
 </div>
-<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-1">
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
 Community Sandbox</label><div class="sd-tab-content docutils">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nemoclaw<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--from<span class="w"> </span>openclaw
 </pre></div>
@@ -514,6 +534,7 @@ Community Sandbox</label><div class="sd-tab-content docutils">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-the-openshell-cli">Install the OpenShell CLI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#connect-to-a-gateway">Connect to a Gateway</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-your-first-openshell-sandbox">Create Your First OpenShell Sandbox</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
 </ul>
