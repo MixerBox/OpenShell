@@ -484,19 +484,9 @@ You then diagnose the denial from your machine and from inside the sandbox, appl
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
 <p>This tutorial requires the following:</p>
-<ul>
+<ul class="simple">
 <li><p>A working OpenShell installation. Complete the <a class="reference internal" href="../get-started/quickstart.html"><span class="doc">Quickstart</span></a> before proceeding.</p></li>
-<li><p>A GitHub personal access token (PAT) with <code class="docutils literal notranslate"><span class="pre">repo</span></code> scope. Generate one from the <a class="reference external" href="https://github.com/settings/tokens" rel="noreferer noopener" target="_blank">GitHub personal access token settings page</a> by selecting <strong>Generate new token (classic)</strong> and enabling the <code class="docutils literal notranslate"><span class="pre">repo</span></code> scope.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>To avoid pasting the token manually during the tutorial, you can configure a <a class="reference internal" href="../sandboxes/providers.html"><span class="doc">credential provider</span></a> to inject it automatically at sandbox startup:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>provider<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>my-github<span class="w"> </span>--type<span class="w"> </span>github<span class="w"> </span>--from-existing
-<span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--provider<span class="w"> </span>my-github<span class="w"> </span>--keep<span class="w"> </span>--<span class="w"> </span>claude
-</pre></div>
-</div>
-<p>The provider reads <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code> from your host environment and exposes it as an environment variable inside the sandbox. Claude Code can then use it directly.</p>
-</div>
-</li>
+<li><p>A GitHub personal access token (PAT) with <code class="docutils literal notranslate"><span class="pre">repo</span></code> scope. Generate one from the <a class="reference external" href="https://github.com/settings/tokens" rel="noreferer noopener" target="_blank">GitHub personal access token settings page</a> by selecting <strong>Generate new token (classic)</strong> and enabling the <code class="docutils literal notranslate"><span class="pre">repo</span></code> scope.</p></li>
 <li><p>An <a class="reference external" href="https://console.anthropic.com/" rel="noreferer noopener" target="_blank">Anthropic account</a> with access to Claude Code. OpenShell provides the sandbox runtime, not the agent. You must authenticate with your own account.</p></li>
 <li><p>A GitHub repository you own to use as the push target. A scratch repository is sufficient. You can <a class="reference external" href="https://github.com/new" rel="noreferer noopener" target="_blank">create one</a> with a README if needed.</p></li>
 </ul>
@@ -507,14 +497,34 @@ You then diagnose the denial from your machine and from inside the sandbox, appl
 </ul>
 <p>Each section below indicates which terminal to use.</p>
 </section>
-<section id="launch-the-sandbox">
-<h2>Launch the Sandbox<a class="headerlink" href="#launch-the-sandbox" title="Link to this heading">#</a></h2>
-<p>In terminal 1, create a sandbox and start Claude Code. No custom policy is needed. The <a class="reference internal" href="../reference/default-policy.html"><span class="doc">default policy</span></a> is applied automatically:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--keep<span class="w"> </span>--<span class="w"> </span>claude
+<section id="set-up-a-sandbox-with-your-github-token">
+<h2>Set up a Sandbox with Your GitHub Token<a class="headerlink" href="#set-up-a-sandbox-with-your-github-token" title="Link to this heading">#</a></h2>
+<p>Depending on whether you are starting a new sandbox or using an existing one, choose the appropriate tab and follow the instructions.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Starting a new sandbox</label><div class="sd-tab-content docutils">
+<p>In terminal 1, create a new sandbox with Claude Code. The <a class="reference internal" href="../reference/default-policy.html"><span class="doc">default policy</span></a> is applied automatically, which allows read-only access to GitHub.</p>
+<p>Create a <a class="reference internal" href="../sandboxes/providers.html"><span class="doc">credential provider</span></a> that injects your GitHub token into the sandbox automatically. The provider reads <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code> from your host environment and sets it as an environment variable inside the sandbox:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">GITHUB_TOKEN</span><span class="o">=</span>&lt;your-token&gt;
+<span class="gp">$ </span>openshell<span class="w"> </span>provider<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>my-github<span class="w"> </span>--type<span class="w"> </span>github<span class="w"> </span>--from-existing
+<span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--provider<span class="w"> </span>my-github<span class="w"> </span>--keep<span class="w"> </span>--<span class="w"> </span>claude
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">--keep</span></code> flag keeps the sandbox running after Claude Code exits, so you can apply policy updates later without recreating the environment.</p>
 <p>Claude Code starts inside the sandbox. It prints an authentication link. Open it in your browser, sign in to your Anthropic account, and return to the terminal. When prompted, trust the <code class="docutils literal notranslate"><span class="pre">/sandbox</span></code> workspace to allow Claude Code to read and write files.</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Using an existing sandbox</label><div class="sd-tab-content docutils">
+<p>Connect to a sandbox that is already running and set your GitHub token as an environment variable:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>connect<span class="w"> </span>&lt;sandbox-name&gt;
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_TOKEN</span><span class="o">=</span>&lt;your-token&gt;
+</pre></div>
+</div>
+<p>To find the name of running sandboxes, run <code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">list</span></code>.</p>
+</div>
+</div>
 </section>
 <section id="push-code-to-github">
 <h2>Push Code to GitHub<a class="headerlink" href="#push-code-to-github" title="Link to this heading">#</a></h2>
@@ -568,24 +578,12 @@ not a token issue. No matter what token you provide, pushes through the API
 will be blocked until the policy is updated.</p>
 </div>
 </details><p>Both perspectives confirm the same thing: the proxy is doing its job. The default policy is designed to be restrictive. To allow GitHub pushes, you need to update the network policy.</p>
+<p>Copy the deny reason from Claude’s response. You paste it into an agent running on your machine in the next step.</p>
 </section>
 </section>
-<section id="update-the-policy-from-your-machine">
-<h2>Update the Policy from Your Machine<a class="headerlink" href="#update-the-policy-from-your-machine" title="Link to this heading">#</a></h2>
-<p>In terminal 2, ask a coding agent on your machine, such as Claude Code or Cursor, to recommend a policy update based on the denied requests and apply it to the running sandbox. For example, prompt it with:</p>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-terminal" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25ZM7.25 8a.749.749 0 0 1-.22.53l-2.25 2.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L5.44 8 3.72 6.28a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215l2.25 2.25c.141.14.22.331.22.53Zm1.5 1.5h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5Z"></path></svg></span><span class="sd-summary-text">Prompt</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">Create a policy file that extends the default policy with GitHub
-write access for my repository. The following are the deny reasons I found
-in the logs:</p>
-<p class="sd-card-text">The sandbox runs a proxy that enforces policies on outbound traffic.
-The github_rest_api policy allows GET requests (used to read the file)
-but blocks PUT/write requests to GitHub. This is a sandbox-level
-restriction, not a token issue. No matter what token you provide,
-pushes through the API will be blocked until the policy is updated.</p>
-</div>
-</details><p>The following steps outline the expected process done by the agent:</p>
+<section id="update-the-policy-from-your-laptop">
+<h2>Update the Policy from Your Laptop<a class="headerlink" href="#update-the-policy-from-your-laptop" title="Link to this heading">#</a></h2>
+<p>In terminal 2, paste the deny reason from the previous step into your coding agent, such as Claude Code or Cursor, and ask it to update the sandbox policy. The deny reason gives the agent the context it needs to generate the correct policy rules.</p>
 <ol class="arabic">
 <li><p>Inspects the deny reasons.</p></li>
 <li><p>Writes an updated policy that adds <code class="docutils literal notranslate"><span class="pre">github_git</span></code> and <code class="docutils literal notranslate"><span class="pre">github_api</span></code> blocks that grant write access to your repository.</p></li>
@@ -845,14 +843,14 @@ pushes through the API will be blocked until the policy is updated.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launch-the-sandbox">Launch the Sandbox</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-a-sandbox-with-your-github-token">Set up a Sandbox with Your GitHub Token</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#push-code-to-github">Push Code to GitHub</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnose-the-denial">Diagnose the Denial</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#view-the-logs-from-your-machine">View the Logs from Your Machine</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ask-claude-to-check-the-sandbox-logs">Ask Claude to Check the Sandbox Logs</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-the-policy-from-your-machine">Update the Policy from Your Machine</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-the-policy-from-your-laptop">Update the Policy from Your Laptop</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#retry-the-push">Retry the Push</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-up">Clean Up</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>

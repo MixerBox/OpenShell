@@ -614,7 +614,7 @@
 <td><p>Download files from a sandbox to the host.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">ssh-config</span> <span class="pre">&lt;name&gt;</span></code></p></td>
-<td><p>Print SSH config for a sandbox. Append to <code class="docutils literal notranslate"><span class="pre">~/.ssh/config</span></code> for VS Code Remote-SSH.</p></td>
+<td><p>Print the generated SSH config block for a sandbox.</p></td>
 </tr>
 </tbody>
 </table>
@@ -644,13 +644,16 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--keep</span></code></p></td>
 <td><p>Keep the sandbox alive after the trailing command exits.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--forward</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--editor</span></code></p></td>
+<td><p>Launch <code class="docutils literal notranslate"><span class="pre">vscode</span></code> or <code class="docutils literal notranslate"><span class="pre">cursor</span></code> into <code class="docutils literal notranslate"><span class="pre">/sandbox</span></code>; installs OpenShell-managed SSH config and implies <code class="docutils literal notranslate"><span class="pre">--keep</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--forward</span></code></p></td>
 <td><p>Forward a local port into the sandbox at startup.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--from</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--from</span></code></p></td>
 <td><p>Build from a community sandbox name, local Dockerfile directory, or container image reference.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--</span> <span class="pre">&lt;command&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--</span> <span class="pre">&lt;command&gt;</span></code></p></td>
 <td><p>The command to run inside the sandbox. Everything after <code class="docutils literal notranslate"><span class="pre">--</span></code> is passed as the agent command.</p></td>
 </tr>
 </tbody>

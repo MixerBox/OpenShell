@@ -535,6 +535,17 @@ reconnect later from another terminal or VS Code.</p>
 </pre></div>
 </div>
 </section>
+<section id="open-in-a-remote-editor">
+<h3>Open in a remote editor<a class="headerlink" href="#open-in-a-remote-editor" title="Link to this heading">#</a></h3>
+<p>Launch VS Code or Cursor directly into the sandbox workspace:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--editor<span class="w"> </span>vscode<span class="w"> </span>--name<span class="w"> </span>my-sandbox
+<span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>connect<span class="w"> </span>my-sandbox<span class="w"> </span>--editor<span class="w"> </span>cursor
+</pre></div>
+</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">--editor</span></code> is used, OpenShell keeps the sandbox alive and installs an
+OpenShell-managed SSH include file instead of cluttering your main
+<code class="docutils literal notranslate"><span class="pre">~/.ssh/config</span></code> with generated host blocks.</p>
+</section>
 </section>
 <section id="view-logs">
 <h2>View Logs<a class="headerlink" href="#view-logs" title="Link to this heading">#</a></h2>
@@ -680,6 +691,7 @@ reconnect later from another terminal or VS Code.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#list-and-inspect-sandboxes">List and Inspect Sandboxes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#connect-to-a-sandbox">Connect to a Sandbox</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-ssh">Interactive SSH</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#open-in-a-remote-editor">Open in a remote editor</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#view-logs">View Logs</a></li>
