@@ -26,13 +26,13 @@ content:
 
 # Set Up a Sandbox of Claude Code with a Custom GitHub Policy
 
-This tutorial walks through the iterative policy workflow. You launch a sandbox, ask Claude Code to push code to GitHub, get blocked by the default network policy, diagnose the denial from two angles — the OpenShell Terminal on your laptop and the sandbox logs from inside — and then apply a custom policy to fix it, all without recreating the sandbox.
+This tutorial walks through the iterative policy workflow. You launch a sandbox, ask Claude Code to push code to GitHub, get blocked by the default network policy, diagnose the denial from two angles — the OpenShell Terminal on your laptop and the sandbox logs from inside — and then recommend, review, and apply a custom policy to fix it, all without recreating the sandbox.
 
 After completing this tutorial, you will have:
 
 - A running sandbox with Claude Code that can push to a GitHub repository.
 - A custom network policy that grants GitHub access for a specific repository.
-- Experience with the policy iteration workflow: fail, diagnose, update, verify.
+- Experience with the policy iteration workflow: fail, diagnose, recommend, review, apply, verify.
 
 :::{note}
 This tutorial shows example prompts and responses from Claude Code. The exact wording you see may differ between sessions — use the examples as a guide for the type of interaction, not as expected output.
@@ -148,17 +148,23 @@ Both perspectives confirm the same thing: the proxy is doing its job. The defaul
 
 Copy the deny reason from Claude's response — you will paste it into your laptop agent in the next step.
 
-## Update the Policy from Your Laptop
+## Update the Policy
 
-**Terminal 2 (laptop)** — Paste the deny reason from the previous step into your coding agent (for example, Claude Code or Cursor running on your laptop) and ask it to update the sandbox policy. The deny reason gives the agent the context it needs to generate the correct policy rules.
+### Ask your coding agent to recommend a policy
 
-The agent inspects the deny reasons, writes an updated policy that adds `github_git` and `github_api` blocks for your repository, and runs `openshell policy set` to apply it:
+**Terminal 2 (laptop)** — Paste the deny reason from the previous step into your coding agent (for example, Claude Code or Cursor running on your laptop) and ask it to recommend a policy update. The deny reason gives the agent the context it needs to generate the correct policy rules:
 
-```console
-$ openshell policy set <sandbox-name> --policy /tmp/sandbox-policy-update.yaml --wait
+```text
+Based on these deny reasons, recommend a sandbox policy update that allows GitHub pushes to <org>/<repo>.
 ```
 
-Your coding agent generates both the policy file and this command. Network policies are hot-reloadable — the `--wait` flag blocks until the policy engine confirms the new revision loaded, and the update takes effect immediately without restarting the sandbox or reconnecting Claude Code.
+The agent inspects the deny reasons and writes an updated policy that adds `github_git` and `github_api` blocks for your repository. It saves the policy to a file — for example, `/tmp/sandbox-policy-update.yaml`.
+
+### Review the recommended policy
+
+Open the generated policy file and review the changes before applying them. Confirm that the policy grants only the access you expect — in this case, git push operations and REST API access scoped to a single repository.
+
+Alternatively, you can skip the recommendation step and use the full reference policy below directly — replace `<org>` and `<repo>` with your GitHub organization or username and repository name.
 
 :::{dropdown} Full reference policy
 
@@ -315,6 +321,16 @@ The remaining blocks (`claude_code`, `nvidia_inference`, `pypi`, `vscode`) are i
 
 For details on policy block structure, refer to [Network Access Rules](/sandboxes/index.md#network-access-rules).
 :::
+
+### Apply the policy
+
+Once you are satisfied with the policy, apply it to the sandbox:
+
+```console
+$ openshell policy set <sandbox-name> --policy /tmp/sandbox-policy-update.yaml --wait
+```
+
+Network policies are hot-reloadable — the `--wait` flag blocks until the policy engine confirms the new revision loaded, and the update takes effect immediately without restarting the sandbox or reconnecting Claude Code.
 
 ## Retry the Push
 
