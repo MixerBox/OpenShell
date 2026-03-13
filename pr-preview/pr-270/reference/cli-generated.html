@@ -1,0 +1,1566 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>OpenShell CLI Reference &#8212; NVIDIA OpenShell Developer Guide</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/nvidia-sphinx-theme.css?v=933278ad" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/enhanced-search.css?v=2e2db37d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+
+    <script src="../_static/documentation_options.js?v=2caa9db7"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../_static/search-assets.bundle.js?v=00e3e057"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/cli-generated';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+
+    <link rel="canonical" href="https://docs.nvidia.com/openshell/latest/reference/cli-generated.html" />
+    <link rel="icon" href="../_static/favicon.png"/>
+
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Default Policy Reference" href="default-policy.html" />
+    <link rel="prev" title="CLI Reference" href="cli.html" />
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+
+
+  </head>
+
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" class="logo__image only-light" alt="NVIDIA OpenShell Developer Guide - Home"/>
+    <img src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg" class="logo__image only-dark pst-js-only" alt="NVIDIA OpenShell Developer Guide - Home"/>
+  
+  
+    <p class="title logo__title">NVIDIA OpenShell Developer Guide</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+
+
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/NVIDIA/OpenShell" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/openshell/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" class="logo__image only-light" alt="NVIDIA OpenShell Developer Guide - Home"/>
+    <img src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg" class="logo__image only-dark pst-js-only" alt="NVIDIA OpenShell Developer Guide - Home"/>
+  
+  
+    <p class="title logo__title">NVIDIA OpenShell Developer Guide</p>
+  
+</a>
+
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+
+
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/NVIDIA/OpenShell" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/openshell/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Table of Contents">
+  <p class="bd-links__title" role="heading" aria-level="1">Table of Contents</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About NVIDIA OpenShell</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../about/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/architecture.html">How It Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/release-notes.html">Release Notes</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../get-started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/github-sandbox.html">GitHub Policy Tutorial</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sandboxes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../sandboxes/index.html">About Sandboxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sandboxes/create-and-manage.html">Create and Manage Sandboxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sandboxes/providers.html">Providers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sandboxes/policies.html">Customize Sandbox Policies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sandboxes/community-sandboxes.html">Community Sandboxes</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Inference Routing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../inference/index.html">About Inference Routing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inference/configure.html">Configure Inference Routing</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI Reference</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">OpenShell CLI Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="default-policy.html">Default Policy Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="policy-schema.html">Policy Schema Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support-matrix.html">Support Matrix</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../resources/eula.html">License</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">OpenShell CLI Reference</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="openshell-cli-reference">
+<h1>OpenShell CLI Reference<a class="headerlink" href="#openshell-cli-reference" title="Link to this heading">#</a></h1>
+<!-- Auto-generated from CLI source definitions. Do not edit manually. -->
+<!-- Regenerate: openshell docs cli-reference -->
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENSHELL_GATEWAY</span></code></p></td>
+<td><p>Gateway name to operate on (resolved from stored metadata).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENSHELL_GATEWAY_ENDPOINT</span></code></p></td>
+<td><p>Gateway endpoint URL (e.g. <a class="reference external" href="https://gateway.example.com" rel="noreferer noopener" target="_blank">https://gateway.example.com</a>). Connects directly without looking up gateway metadata.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="command-tree">
+<h2>Command Tree<a class="headerlink" href="#command-tree" title="Link to this heading">#</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>openshell
+├── sandbox
+│   ├── create [COMMAND]
+│   ├── get [NAME]
+│   ├── list
+│   ├── delete [NAME]
+│   ├── connect [NAME]
+│   ├── upload &lt;NAME&gt; &lt;LOCAL_PATH&gt; [DEST]
+│   ├── download &lt;NAME&gt; &lt;SANDBOX_PATH&gt; [DEST]
+│   └── ssh-config [NAME]
+├── forward
+│   ├── start &lt;PORT&gt; [NAME]
+│   ├── stop &lt;PORT&gt; [NAME]
+│   └── list
+├── logs [NAME]
+├── policy
+│   ├── set [NAME]
+│   ├── get [NAME]
+│   └── list [NAME]
+├── provider
+│   ├── create
+│   ├── get &lt;NAME&gt;
+│   ├── list
+│   ├── update &lt;NAME&gt;
+│   └── delete &lt;NAME&gt;
+├── gateway
+│   ├── start
+│   ├── stop
+│   ├── destroy
+│   ├── add &lt;ENDPOINT&gt;
+│   ├── login [NAME]
+│   ├── select [NAME]
+│   └── info
+├── status
+├── inference
+│   ├── set
+│   ├── update
+│   └── get
+├── term
+└── completions &lt;SHELL&gt;
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="sandbox-commands">
+<h2>Sandbox Commands<a class="headerlink" href="#sandbox-commands" title="Link to this heading">#</a></h2>
+<p>Manage sandboxes.</p>
+<section id="openshell-sandbox-create-command">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">create</span> <span class="pre">[COMMAND]</span></code><a class="headerlink" href="#openshell-sandbox-create-command" title="Link to this heading">#</a></h3>
+<p>Create a sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Optional sandbox name (auto-generated when omitted).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--from</span> <span class="pre">&lt;FROM&gt;</span></code></p></td>
+<td><p>Sandbox source: a community sandbox name (e.g., <code class="docutils literal notranslate"><span class="pre">openclaw</span></code>), a path to a Dockerfile or directory containing one, or a full container image reference (e.g., <code class="docutils literal notranslate"><span class="pre">myregistry.com/img:tag</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--upload</span> <span class="pre">&lt;UPLOAD&gt;</span></code></p></td>
+<td><p>Upload local files into the sandbox before running.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--no-git-ignore</span></code></p></td>
+<td><p>Disable <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> filtering for <code class="docutils literal notranslate"><span class="pre">--upload</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--no-keep</span></code></p></td>
+<td><p>Delete the sandbox after the initial command or shell exits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--editor</span> <span class="pre">&lt;EDITOR&gt;</span></code></p></td>
+<td><p>Launch a remote editor after the sandbox is ready. Keeps the sandbox alive and installs OpenShell-managed SSH config.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--remote</span> <span class="pre">&lt;REMOTE&gt;</span></code></p></td>
+<td><p>SSH destination for remote bootstrap (e.g., user&#64;hostname). Only used when no cluster exists yet; ignored if a cluster is already active.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--ssh-key</span> <span class="pre">&lt;SSH_KEY&gt;</span></code></p></td>
+<td><p>Path to SSH private key for remote bootstrap.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--provider</span> <span class="pre">&lt;PROVIDERS&gt;</span></code></p></td>
+<td><p>Provider names to attach to this sandbox.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--policy</span> <span class="pre">&lt;POLICY&gt;</span></code></p></td>
+<td><p>Path to a custom sandbox policy YAML file. Overrides the built-in default and the <code class="docutils literal notranslate"><span class="pre">OPENSHELL_SANDBOX_POLICY</span></code> env var.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--forward</span> <span class="pre">&lt;FORWARD&gt;</span></code></p></td>
+<td><p>Forward a local port to the sandbox before the initial command or shell starts. Keeps the sandbox alive.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--tty</span></code></p></td>
+<td><p>Allocate a pseudo-terminal for the remote command. Defaults to auto-detection (on when stdin and stdout are terminals). Use –tty to force a PTY even when auto-detection fails, or –no-tty to disable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--no-tty</span></code></p></td>
+<td><p>Disable pseudo-terminal allocation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--no-bootstrap</span></code></p></td>
+<td><p>Never bootstrap a gateway automatically; error if none is available.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--auto-providers</span></code></p></td>
+<td><p>Auto-create missing providers from local credentials.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--no-auto-providers</span></code></p></td>
+<td><p>Never auto-create providers; error if required providers are missing.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[COMMAND]</span></code></p></td>
+<td><p>Command to run after “–” (defaults to an interactive shell).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-sandbox-get-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">get</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-sandbox-get-name" title="Link to this heading">#</a></h3>
+<p>Fetch a sandbox by name.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-sandbox-list">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">list</span></code><a class="headerlink" href="#openshell-sandbox-list" title="Link to this heading">#</a></h3>
+<p>List sandboxes.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">100</span></code></p></td>
+<td><p>Maximum number of sandboxes to return.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--offset</span> <span class="pre">&lt;OFFSET&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+<td><p>Offset into the sandbox list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--ids</span></code></p></td>
+<td><p></p></td>
+<td><p>Print only sandbox ids (one per line).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--names</span></code></p></td>
+<td><p></p></td>
+<td><p>Print only sandbox names (one per line).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-sandbox-delete-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">delete</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-sandbox-delete-name" title="Link to this heading">#</a></h3>
+<p>Delete a sandbox by name.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p>Sandbox names.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--all</span></code></p></td>
+<td><p>Delete all sandboxes.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-sandbox-connect-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">connect</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-sandbox-connect-name" title="Link to this heading">#</a></h3>
+<p>Connect to a sandbox.</p>
+<p>When no name is given, reconnects to the last-used sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--editor</span> <span class="pre">&lt;EDITOR&gt;</span></code></p></td>
+<td><p>Launch a remote editor instead of an interactive shell. Installs OpenShell-managed SSH config if needed.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-sandbox-upload-name-local-path-dest">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">upload</span> <span class="pre">&lt;NAME&gt;</span> <span class="pre">&lt;LOCAL_PATH&gt;</span> <span class="pre">[DEST]</span></code><a class="headerlink" href="#openshell-sandbox-upload-name-local-path-dest" title="Link to this heading">#</a></h3>
+<p>Upload local files to a sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Sandbox name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;LOCAL_PATH&gt;</span></code></p></td>
+<td><p>Local path to upload.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[DEST]</span></code></p></td>
+<td><p>Destination path in the sandbox (defaults to <code class="docutils literal notranslate"><span class="pre">/sandbox</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--no-git-ignore</span></code></p></td>
+<td><p>Disable <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> filtering (uploads everything).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-sandbox-download-name-sandbox-path-dest">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">download</span> <span class="pre">&lt;NAME&gt;</span> <span class="pre">&lt;SANDBOX_PATH&gt;</span> <span class="pre">[DEST]</span></code><a class="headerlink" href="#openshell-sandbox-download-name-sandbox-path-dest" title="Link to this heading">#</a></h3>
+<p>Download files from a sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Sandbox name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;SANDBOX_PATH&gt;</span></code></p></td>
+<td><p>Sandbox path to download.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[DEST]</span></code></p></td>
+<td><p>Local destination (defaults to <code class="docutils literal notranslate"><span class="pre">.</span></code>).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-sandbox-ssh-config-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">ssh-config</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-sandbox-ssh-config-name" title="Link to this heading">#</a></h3>
+<p>Print an SSH config entry for a sandbox.</p>
+<p>Outputs a Host block suitable for appending to ~/.ssh/config, enabling tools like <code class="docutils literal notranslate"><span class="pre">VSCode</span></code> Remote-SSH to connect to the sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="forward-commands">
+<h2>Forward Commands<a class="headerlink" href="#forward-commands" title="Link to this heading">#</a></h2>
+<p>Manage port forwarding to a sandbox.</p>
+<section id="openshell-forward-start-port-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">forward</span> <span class="pre">start</span> <span class="pre">&lt;PORT&gt;</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-forward-start-port-name" title="Link to this heading">#</a></h3>
+<p>Start forwarding a local port to a sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;PORT&gt;</span></code></p></td>
+<td><p>Port to forward (used as both local and remote port).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-d</span></code>, <code class="docutils literal notranslate"><span class="pre">--background</span></code></p></td>
+<td><p>Run the forward in the background and exit immediately.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-forward-stop-port-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">forward</span> <span class="pre">stop</span> <span class="pre">&lt;PORT&gt;</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-forward-stop-port-name" title="Link to this heading">#</a></h3>
+<p>Stop a background port forward.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;PORT&gt;</span></code></p></td>
+<td><p>Port that was forwarded.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-forward-list">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">forward</span> <span class="pre">list</span></code><a class="headerlink" href="#openshell-forward-list" title="Link to this heading">#</a></h3>
+<p>List active port forwards.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="policy-commands">
+<h2>Policy Commands<a class="headerlink" href="#policy-commands" title="Link to this heading">#</a></h2>
+<p>Manage sandbox policy.</p>
+<section id="openshell-policy-set-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">policy</span> <span class="pre">set</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-policy-set-name" title="Link to this heading">#</a></h3>
+<p>Update policy on a live sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--policy</span> <span class="pre">&lt;POLICY&gt;</span></code></p></td>
+<td><p></p></td>
+<td><p>Path to the policy YAML file.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--wait</span></code></p></td>
+<td><p></p></td>
+<td><p>Wait for the sandbox to load the policy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">60</span></code></p></td>
+<td><p>Timeout for –wait in seconds.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-policy-get-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">policy</span> <span class="pre">get</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-policy-get-name" title="Link to this heading">#</a></h3>
+<p>Show current active policy for a sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--rev</span> <span class="pre">&lt;REV&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+<td><p>Show a specific policy revision (default: latest).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--full</span></code></p></td>
+<td><p></p></td>
+<td><p>Print the full policy as YAML.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-policy-list-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">policy</span> <span class="pre">list</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-policy-list-name" title="Link to this heading">#</a></h3>
+<p>List policy history for a sandbox.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">20</span></code></p></td>
+<td><p>Maximum number of revisions to return.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="provider-commands">
+<h2>Provider Commands<a class="headerlink" href="#provider-commands" title="Link to this heading">#</a></h2>
+<p>Manage provider configuration.</p>
+<section id="openshell-provider-create">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">create</span></code><a class="headerlink" href="#openshell-provider-create" title="Link to this heading">#</a></h3>
+<p>Create a provider config.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Provider name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--type</span> <span class="pre">&lt;PROVIDER_TYPE&gt;</span></code></p></td>
+<td><p>Provider type.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--from-existing</span></code></p></td>
+<td><p>Load provider credentials/config from existing local state.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--credential</span> <span class="pre">&lt;KEY[=VALUE]&gt;</span></code></p></td>
+<td><p>Provider credential pair (<code class="docutils literal notranslate"><span class="pre">KEY=VALUE</span></code>) or env lookup key (<code class="docutils literal notranslate"><span class="pre">KEY</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">&lt;KEY=VALUE&gt;</span></code></p></td>
+<td><p>Provider config key/value pair.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-provider-get-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">get</span> <span class="pre">&lt;NAME&gt;</span></code><a class="headerlink" href="#openshell-provider-get-name" title="Link to this heading">#</a></h3>
+<p>Fetch a provider by name.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Provider name.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-provider-list">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">list</span></code><a class="headerlink" href="#openshell-provider-list" title="Link to this heading">#</a></h3>
+<p>List providers.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">100</span></code></p></td>
+<td><p>Maximum number of providers to return.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--offset</span> <span class="pre">&lt;OFFSET&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+<td><p>Offset into the provider list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--names</span></code></p></td>
+<td><p></p></td>
+<td><p>Print only provider names, one per line.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-provider-update-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">update</span> <span class="pre">&lt;NAME&gt;</span></code><a class="headerlink" href="#openshell-provider-update-name" title="Link to this heading">#</a></h3>
+<p>Update an existing provider’s credentials or config.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Provider name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--from-existing</span></code></p></td>
+<td><p>Re-discover credentials from existing local state (e.g. env vars, config files).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--credential</span> <span class="pre">&lt;KEY[=VALUE]&gt;</span></code></p></td>
+<td><p>Provider credential pair (<code class="docutils literal notranslate"><span class="pre">KEY=VALUE</span></code>) or env lookup key (<code class="docutils literal notranslate"><span class="pre">KEY</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">&lt;KEY=VALUE&gt;</span></code></p></td>
+<td><p>Provider config key/value pair.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-provider-delete-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">delete</span> <span class="pre">&lt;NAME&gt;</span></code><a class="headerlink" href="#openshell-provider-delete-name" title="Link to this heading">#</a></h3>
+<p>Delete providers by name.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Provider names.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="gateway-commands">
+<h2>Gateway Commands<a class="headerlink" href="#gateway-commands" title="Link to this heading">#</a></h2>
+<p>Manage the gateway lifecycle.</p>
+<section id="openshell-gateway-start">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">start</span></code><a class="headerlink" href="#openshell-gateway-start" title="Link to this heading">#</a></h3>
+<p>Deploy/start the gateway.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">openshell</span></code></p></td>
+<td><p>Gateway name. Env: <code class="docutils literal notranslate"><span class="pre">OPENSHELL_GATEWAY</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--remote</span> <span class="pre">&lt;REMOTE&gt;</span></code></p></td>
+<td><p></p></td>
+<td><p>SSH destination for remote deployment (e.g., user&#64;hostname).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--ssh-key</span> <span class="pre">&lt;SSH_KEY&gt;</span></code></p></td>
+<td><p></p></td>
+<td><p>Path to SSH private key for remote deployment.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--port</span> <span class="pre">&lt;PORT&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">8080</span></code></p></td>
+<td><p>Host port to map to the gateway (default: 8080).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--gateway-host</span> <span class="pre">&lt;GATEWAY_HOST&gt;</span></code></p></td>
+<td><p></p></td>
+<td><p>Override the gateway host written into cluster metadata.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--recreate</span></code></p></td>
+<td><p></p></td>
+<td><p>Destroy and recreate the gateway from scratch if one already exists.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--plaintext</span></code></p></td>
+<td><p></p></td>
+<td><p>Listen on plaintext HTTP instead of mTLS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--disable-gateway-auth</span></code></p></td>
+<td><p></p></td>
+<td><p>Disable gateway authentication (mTLS client certificate requirement).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--registry-token</span> <span class="pre">&lt;REGISTRY_TOKEN&gt;</span></code></p></td>
+<td><p></p></td>
+<td><p>Authentication token for pulling container images from ghcr.io. Env: <code class="docutils literal notranslate"><span class="pre">OPENSHELL_REGISTRY_TOKEN</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--gpu</span></code></p></td>
+<td><p></p></td>
+<td><p>Enable NVIDIA GPU passthrough.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-gateway-stop">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">stop</span></code><a class="headerlink" href="#openshell-gateway-stop" title="Link to this heading">#</a></h3>
+<p>Stop the gateway (preserves state).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Gateway name (defaults to active gateway). Env: <code class="docutils literal notranslate"><span class="pre">OPENSHELL_GATEWAY</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--remote</span> <span class="pre">&lt;REMOTE&gt;</span></code></p></td>
+<td><p>Override SSH destination (auto-resolved from gateway metadata).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--ssh-key</span> <span class="pre">&lt;SSH_KEY&gt;</span></code></p></td>
+<td><p>Path to SSH private key for remote gateway.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-gateway-destroy">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">destroy</span></code><a class="headerlink" href="#openshell-gateway-destroy" title="Link to this heading">#</a></h3>
+<p>Destroy the gateway and its state.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Gateway name (defaults to active gateway). Env: <code class="docutils literal notranslate"><span class="pre">OPENSHELL_GATEWAY</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--remote</span> <span class="pre">&lt;REMOTE&gt;</span></code></p></td>
+<td><p>Override SSH destination (auto-resolved from gateway metadata).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--ssh-key</span> <span class="pre">&lt;SSH_KEY&gt;</span></code></p></td>
+<td><p>Path to SSH private key for remote gateway.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-gateway-add-endpoint">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">add</span> <span class="pre">&lt;ENDPOINT&gt;</span></code><a class="headerlink" href="#openshell-gateway-add-endpoint" title="Link to this heading">#</a></h3>
+<p>Add an existing gateway.</p>
+<p>Registers a gateway endpoint so it appears in <code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">select</span></code>.</p>
+<p>Without extra flags the gateway is treated as an edge-authenticated (cloud) gateway and a browser is opened for authentication.</p>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">--remote</span> <span class="pre">&lt;ssh-dest&gt;</span></code> to register a remote mTLS gateway whose Docker daemon is reachable over SSH. Pass <code class="docutils literal notranslate"><span class="pre">--local</span></code> to register a local mTLS gateway running in Docker on this machine. In both cases the CLI extracts mTLS certificates from the running container automatically.</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">ssh://</span></code> endpoint (e.g., <code class="docutils literal notranslate"><span class="pre">ssh://user&#64;host:8080</span></code>) is shorthand for <code class="docutils literal notranslate"><span class="pre">--remote</span> <span class="pre">user&#64;host</span></code> with the endpoint derived from the URL.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;ENDPOINT&gt;</span></code></p></td>
+<td><p>Gateway endpoint URL (e.g., <code class="docutils literal notranslate"><span class="pre">https://10.0.0.5:8080</span></code> or <code class="docutils literal notranslate"><span class="pre">ssh://user&#64;host:8080</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Gateway name (auto-derived from the endpoint hostname when omitted).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--remote</span> <span class="pre">&lt;REMOTE&gt;</span></code></p></td>
+<td><p>Register a remote mTLS gateway accessible via SSH.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--ssh-key</span> <span class="pre">&lt;SSH_KEY&gt;</span></code></p></td>
+<td><p>SSH private key for the remote host (used with <code class="docutils literal notranslate"><span class="pre">--remote</span></code> or <code class="docutils literal notranslate"><span class="pre">ssh://</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--local</span></code></p></td>
+<td><p>Register a local mTLS gateway running in Docker on this machine.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-gateway-login-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">login</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-gateway-login-name" title="Link to this heading">#</a></h3>
+<p>Authenticate with an edge-authenticated gateway.</p>
+<p>Opens a browser for the edge proxy’s login flow and stores the token locally. Use this to re-authenticate when a token expires.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p>Gateway name (defaults to the active gateway).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-gateway-select-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">select</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-gateway-select-name" title="Link to this heading">#</a></h3>
+<p>Select the active gateway.</p>
+<p>When called without a name, opens an interactive chooser on a TTY and lists available gateways in non-interactive mode.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p>Gateway name (omit to choose interactively or list in non-interactive mode).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-gateway-info">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">info</span></code><a class="headerlink" href="#openshell-gateway-info" title="Link to this heading">#</a></h3>
+<p>Show gateway deployment details.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></p></td>
+<td><p>Gateway name (defaults to active gateway). Env: <code class="docutils literal notranslate"><span class="pre">OPENSHELL_GATEWAY</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="inference-commands">
+<h2>Inference Commands<a class="headerlink" href="#inference-commands" title="Link to this heading">#</a></h2>
+<p>Manage inference configuration.</p>
+<section id="openshell-inference-set">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">inference</span> <span class="pre">set</span></code><a class="headerlink" href="#openshell-inference-set" title="Link to this heading">#</a></h3>
+<p>Set gateway-level inference provider and model.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--provider</span> <span class="pre">&lt;PROVIDER&gt;</span></code></p></td>
+<td><p>Provider name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--model</span> <span class="pre">&lt;MODEL&gt;</span></code></p></td>
+<td><p>Model identifier to force for generation calls.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--system</span></code></p></td>
+<td><p>Configure the system inference route instead of the user-facing route. System inference is used by platform functions (e.g. the agent harness) and is not accessible to user code.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-inference-update">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">inference</span> <span class="pre">update</span></code><a class="headerlink" href="#openshell-inference-update" title="Link to this heading">#</a></h3>
+<p>Update gateway-level inference configuration (partial update).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--provider</span> <span class="pre">&lt;PROVIDER&gt;</span></code></p></td>
+<td><p>Provider name (unchanged if omitted).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--model</span> <span class="pre">&lt;MODEL&gt;</span></code></p></td>
+<td><p>Model identifier (unchanged if omitted).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--system</span></code></p></td>
+<td><p>Target the system inference route.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-inference-get">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">inference</span> <span class="pre">get</span></code><a class="headerlink" href="#openshell-inference-get" title="Link to this heading">#</a></h3>
+<p>Get gateway-level inference provider and model.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--system</span></code></p></td>
+<td><p>Show the system inference route instead of the user-facing route. When omitted, both routes are displayed.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="additional-commands">
+<h2>Additional Commands<a class="headerlink" href="#additional-commands" title="Link to this heading">#</a></h2>
+<section id="openshell-logs-name">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">logs</span> <span class="pre">[NAME]</span></code><a class="headerlink" href="#openshell-logs-name" title="Link to this heading">#</a></h3>
+<p>View sandbox logs.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[NAME]</span></code></p></td>
+<td><p></p></td>
+<td><p>Sandbox name (defaults to last-used sandbox).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">&lt;N&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">200</span></code></p></td>
+<td><p>Number of log lines to return.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--tail</span></code></p></td>
+<td><p></p></td>
+<td><p>Stream live logs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--since</span> <span class="pre">&lt;SINCE&gt;</span></code></p></td>
+<td><p></p></td>
+<td><p>Only show logs from this duration ago (e.g. 5m, 1h, 30s).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--source</span> <span class="pre">&lt;SOURCE&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">all</span></code></p></td>
+<td><p>Filter by log source: “gateway”, “sandbox”, or “all” (default). Can be specified multiple times: –source gateway –source sandbox.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--level</span> <span class="pre">&lt;LEVEL&gt;</span></code></p></td>
+<td><p></p></td>
+<td><p>Minimum log level to display: error, warn, info (default), debug, trace.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-status">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">status</span></code><a class="headerlink" href="#openshell-status" title="Link to this heading">#</a></h3>
+<p>Show gateway status and information.</p>
+</section>
+<section id="openshell-term">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">term</span></code><a class="headerlink" href="#openshell-term" title="Link to this heading">#</a></h3>
+<p>Launch the <code class="docutils literal notranslate"><span class="pre">OpenShell</span></code> interactive TUI.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--theme</span> <span class="pre">&lt;THEME&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">auto</span></code></p></td>
+<td><p>Color theme for the TUI: auto, dark, or light. Env: <code class="docutils literal notranslate"><span class="pre">OPENSHELL_THEME</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="openshell-completions-shell">
+<h3><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">completions</span> <span class="pre">&lt;SHELL&gt;</span></code><a class="headerlink" href="#openshell-completions-shell" title="Link to this heading">#</a></h3>
+<p>Generate shell completions.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;SHELL&gt;</span></code></p></td>
+<td><p>Shell to generate completions for.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cli.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">CLI Reference</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="default-policy.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Default Policy Reference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+
+
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-variables">Environment Variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command-tree">Command Tree</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sandbox-commands">Sandbox Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-sandbox-create-command"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">create</span> <span class="pre">[COMMAND]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-sandbox-get-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">get</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-sandbox-list"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">list</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-sandbox-delete-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">delete</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-sandbox-connect-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">connect</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-sandbox-upload-name-local-path-dest"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">upload</span> <span class="pre">&lt;NAME&gt;</span> <span class="pre">&lt;LOCAL_PATH&gt;</span> <span class="pre">[DEST]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-sandbox-download-name-sandbox-path-dest"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">download</span> <span class="pre">&lt;NAME&gt;</span> <span class="pre">&lt;SANDBOX_PATH&gt;</span> <span class="pre">[DEST]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-sandbox-ssh-config-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">ssh-config</span> <span class="pre">[NAME]</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#forward-commands">Forward Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-forward-start-port-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">forward</span> <span class="pre">start</span> <span class="pre">&lt;PORT&gt;</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-forward-stop-port-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">forward</span> <span class="pre">stop</span> <span class="pre">&lt;PORT&gt;</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-forward-list"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">forward</span> <span class="pre">list</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-commands">Policy Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-policy-set-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">policy</span> <span class="pre">set</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-policy-get-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">policy</span> <span class="pre">get</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-policy-list-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">policy</span> <span class="pre">list</span> <span class="pre">[NAME]</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#provider-commands">Provider Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-provider-create"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">create</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-provider-get-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">get</span> <span class="pre">&lt;NAME&gt;</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-provider-list"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">list</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-provider-update-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">update</span> <span class="pre">&lt;NAME&gt;</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-provider-delete-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">provider</span> <span class="pre">delete</span> <span class="pre">&lt;NAME&gt;</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gateway-commands">Gateway Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-gateway-start"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">start</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-gateway-stop"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">stop</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-gateway-destroy"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">destroy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-gateway-add-endpoint"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">add</span> <span class="pre">&lt;ENDPOINT&gt;</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-gateway-login-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">login</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-gateway-select-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">select</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-gateway-info"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">gateway</span> <span class="pre">info</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inference-commands">Inference Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-inference-set"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">inference</span> <span class="pre">set</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-inference-update"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">inference</span> <span class="pre">update</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-inference-get"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">inference</span> <span class="pre">get</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-commands">Additional Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-logs-name"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">logs</span> <span class="pre">[NAME]</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-status"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">status</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-term"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">term</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openshell-completions-shell"><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">completions</span> <span class="pre">&lt;SHELL&gt;</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+  <img src="../_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg" class="logo__image only-light" alt="NVIDIA"/>
+  <img src="../_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg" class="logo__image only-dark" alt="NVIDIA"/>
+</a></div>
+      
+        <div class="footer-item">
+
+<div class="footer-links">
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Your Privacy Choices</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+  
+  
+  
+</div>
+</div>
+      
+        <div class="footer-item">
+
+
+
+
+  <p class="copyright">
+    
+      Copyright © 2025-2026, NVIDIA Corporation.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
