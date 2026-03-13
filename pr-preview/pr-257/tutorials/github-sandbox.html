@@ -508,10 +508,10 @@ Starting a new sandbox</label><div class="sd-tab-content docutils">
 <p>Create a <a class="reference internal" href="../sandboxes/providers.html"><span class="doc">credential provider</span></a> that injects your GitHub token into the sandbox automatically. The provider reads <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code> from your host environment and sets it as an environment variable inside the sandbox:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">GITHUB_TOKEN</span><span class="o">=</span>&lt;your-token&gt;
 <span class="gp">$ </span>openshell<span class="w"> </span>provider<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>my-github<span class="w"> </span>--type<span class="w"> </span>github<span class="w"> </span>--from-existing
-<span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--provider<span class="w"> </span>my-github<span class="w"> </span>--keep<span class="w"> </span>--<span class="w"> </span>claude
+<span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--provider<span class="w"> </span>my-github<span class="w"> </span>--<span class="w"> </span>claude
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">--keep</span></code> flag keeps the sandbox running after Claude Code exits, so you can apply policy updates later without recreating the environment.</p>
+<p><code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">create</span></code> keeps the sandbox running after Claude Code exits, so you can apply policy updates later without recreating the environment. Add <code class="docutils literal notranslate"><span class="pre">--no-keep</span></code> if you want the sandbox deleted automatically instead.</p>
 <p>Claude Code starts inside the sandbox. It prints an authentication link. Open it in your browser, sign in to your Anthropic account, and return to the terminal. When prompted, trust the <code class="docutils literal notranslate"><span class="pre">/sandbox</span></code> workspace to allow Claude Code to read and write files.</p>
 </div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
