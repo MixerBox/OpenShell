@@ -488,10 +488,10 @@ The following table summarizes how OpenShell handles inference traffic.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>External endpoints</p></td>
-<td><p>Traffic to hosts like <code class="docutils literal notranslate"><span class="pre">api.openai.com</span></code> or <code class="docutils literal notranslate"><span class="pre">api.anthropic.com</span></code> is treated like any other outbound request, allowed or denied by <code class="docutils literal notranslate"><span class="pre">network_policies</span></code>. Refer to <a class="reference internal" href="../sandboxes/policies.html"><span class="std std-doc">Policies</span></a>.</p></td>
+<td><p>Traffic to hosts like <code class="docutils literal notranslate"><span class="pre">api.openai.com</span></code> or <code class="docutils literal notranslate"><span class="pre">api.anthropic.com</span></code> is treated like any other outbound request, allowed or denied by <code class="docutils literal notranslate"><span class="pre">network_policies</span></code>. Refer to <a class="reference internal" href="../sandboxes/policies.html"><span class="doc">Customize Sandbox Policies</span></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inference.local</span></code></p></td>
-<td><p>A special endpoint exposed inside every sandbox for inference that should stay local to the host for privacy and security. The <a class="reference internal" href="../about/architecture.html"><span class="doc">privacy router</span></a> strips the original credentials, injects the configured backend credentials, and forwards to the managed model endpoint.</p></td>
+<td><p>A special endpoint exposed inside every sandbox for routing inference traffic locally, preserving privacy and security. The <a class="reference internal" href="../about/architecture.html"><span class="doc">privacy router</span></a> strips the original credentials, injects the configured backend credentials, and forwards to the managed model endpoint.</p></td>
 </tr>
 </tbody>
 </table>
@@ -508,7 +508,7 @@ The following table summarizes how OpenShell handles inference traffic.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Credentials</p></td>
-<td><p>No sandbox API keys needed — credentials come from the configured provider record.</p></td>
+<td><p>No sandbox API keys needed. Credentials come from the configured provider record.</p></td>
 </tr>
 <tr class="row-odd"><td><p>Configuration</p></td>
 <td><p>One provider and one model define sandbox inference.</p></td>
@@ -517,7 +517,7 @@ The following table summarizes how OpenShell handles inference traffic.</p>
 <td><p>OpenAI, Anthropic, and NVIDIA providers all work through the same endpoint.</p></td>
 </tr>
 <tr class="row-odd"><td><p>Hot-refresh</p></td>
-<td><p>Provider credential changes and inference updates are picked up without recreating sandboxes.</p></td>
+<td><p>OpenShell picks up provider credential changes and inference updates without recreating sandboxes.</p></td>
 </tr>
 </tbody>
 </table>
