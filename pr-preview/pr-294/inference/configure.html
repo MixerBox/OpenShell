@@ -478,7 +478,7 @@
 -->
 <section class="tex2jax_ignore mathjax_ignore" id="configure-inference-routing">
 <h1>Configure Inference Routing<a class="headerlink" href="#configure-inference-routing" title="Link to this heading">#</a></h1>
-<p>This page covers the managed local inference endpoint (<code class="docutils literal notranslate"><span class="pre">https://inference.local</span></code>). External inference endpoints go through sandbox <code class="docutils literal notranslate"><span class="pre">network_policies</span></code> — refer to <a class="reference internal" href="../sandboxes/policies.html"><span class="std std-doc">Policies</span></a> for details.</p>
+<p>This page covers the managed local inference endpoint (<code class="docutils literal notranslate"><span class="pre">https://inference.local</span></code>). External inference endpoints go through sandbox <code class="docutils literal notranslate"><span class="pre">network_policies</span></code>. Refer to <a class="reference internal" href="../sandboxes/policies.html"><span class="std std-doc">Policies</span></a> for details.</p>
 <p>The configuration consists of two values:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -589,13 +589,10 @@ Anthropic</label><div class="sd-tab-content docutils">
 </pre></div>
 </div>
 <p>A successful response confirms the privacy router can reach the configured backend and the model is serving requests.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p><strong>Gateway-scoped</strong>: every sandbox using the active gateway sees the same <code class="docutils literal notranslate"><span class="pre">inference.local</span></code> backend.</p></li>
-<li><p><strong>HTTPS only</strong> — <code class="docutils literal notranslate"><span class="pre">inference.local</span></code> is intercepted only for HTTPS traffic.</p></li>
+<li><p>Gateway-scoped: Every sandbox using the active gateway sees the same <code class="docutils literal notranslate"><span class="pre">inference.local</span></code> backend.</p></li>
+<li><p>HTTPS only: <code class="docutils literal notranslate"><span class="pre">inference.local</span></code> is intercepted only for HTTPS traffic.</p></li>
 </ul>
-</div>
 </section>
 </section>
 <section id="next-steps">

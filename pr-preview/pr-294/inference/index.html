@@ -487,10 +487,10 @@ The following table summarizes how OpenShell handles inference traffic.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><strong>External endpoints</strong></p></td>
-<td><p>Traffic to hosts like <code class="docutils literal notranslate"><span class="pre">api.openai.com</span></code> or <code class="docutils literal notranslate"><span class="pre">api.anthropic.com</span></code> is treated like any other outbound request — allowed or denied by <code class="docutils literal notranslate"><span class="pre">network_policies</span></code>. Refer to <a class="reference internal" href="../sandboxes/policies.html"><span class="std std-doc">Policies</span></a>.</p></td>
+<tr class="row-even"><td><p>External endpoints</p></td>
+<td><p>Traffic to hosts like <code class="docutils literal notranslate"><span class="pre">api.openai.com</span></code> or <code class="docutils literal notranslate"><span class="pre">api.anthropic.com</span></code> is treated like any other outbound request, allowed or denied by <code class="docutils literal notranslate"><span class="pre">network_policies</span></code>. Refer to <a class="reference internal" href="../sandboxes/policies.html"><span class="std std-doc">Policies</span></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">inference.local</span></code></strong></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inference.local</span></code></p></td>
 <td><p>A special endpoint exposed inside every sandbox for inference that should stay local to the host for privacy and security. The <a class="reference internal" href="../about/architecture.html"><span class="doc">privacy router</span></a> strips the original credentials, injects the configured backend credentials, and forwards to the managed model endpoint.</p></td>
 </tr>
 </tbody>
