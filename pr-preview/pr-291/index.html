@@ -45,7 +45,7 @@
 
 
 
-    <script src="_static/documentation_options.js?v=5aa371e9"></script>
+    <script src="_static/documentation_options.js?v=91d07486"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,13 +53,6 @@
     <script src="_static/search-assets.bundle.js?v=00e3e057"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
-    <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.0.1';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner =
-            false;
-        </script>
 
     <link rel="canonical" href="https://docs.nvidia.com/openshell/latest/index.html" />
     <link rel="icon" href="_static/favicon.png"/>
@@ -155,32 +148,6 @@
   </div>
   
   <div class="col-lg-9 navbar-header-items">
-    
-    <div class="me-auto navbar-header-items__center">
-      
-        <div class="navbar-item">
-
-
-<div class="version-switcher__container dropdown pst-js-only">
-  <button id="pst-version-switcher-button-2"
-    type="button"
-    class="version-switcher__button btn btn-sm dropdown-toggle"
-    data-bs-toggle="dropdown"
-    aria-haspopup="listbox"
-    aria-controls="pst-version-switcher-list-2"
-    aria-label="Version switcher list"
-  >
-    Choose version  <!-- this text may get changed later by javascript -->
-    <span class="caret"></span>
-  </button>
-  <div id="pst-version-switcher-list-2"
-    class="version-switcher__menu dropdown-menu list-group-flush py-0"
-    role="listbox" aria-labelledby="pst-version-switcher-button-2">
-    <!-- dropdown will be populated by javascript on page load -->
-  </div>
-</div></div>
-      
-    </div>
     
     
     <div class="navbar-header-items__end">
@@ -296,35 +263,6 @@
   <div class="sidebar-header-items sidebar-primary__section">
     
     
-      <div class="sidebar-header-items__center">
-        
-          
-          
-            <div class="navbar-item">
-
-
-<div class="version-switcher__container dropdown pst-js-only">
-  <button id="pst-version-switcher-button-3"
-    type="button"
-    class="version-switcher__button btn btn-sm dropdown-toggle"
-    data-bs-toggle="dropdown"
-    aria-haspopup="listbox"
-    aria-controls="pst-version-switcher-list-3"
-    aria-label="Version switcher list"
-  >
-    Choose version  <!-- this text may get changed later by javascript -->
-    <span class="caret"></span>
-  </button>
-  <div id="pst-version-switcher-list-3"
-    class="version-switcher__menu dropdown-menu list-group-flush py-0"
-    role="listbox" aria-labelledby="pst-version-switcher-button-3">
-    <!-- dropdown will be populated by javascript on page load -->
-  </div>
-</div></div>
-          
-        
-      </div>
-    
     
     
       <div class="sidebar-header-items__end">
@@ -384,19 +322,25 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="about/overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="about/architecture.html">How It Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about/supported-agents.html">Supported Agents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="about/release-notes.html">Release Notes</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="get-started/quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/github-sandbox.html">GitHub Policy Tutorial</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials/index.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/first-network-policy.html">First Network Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/github-sandbox.html">GitHub Push Access</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sandboxes</span></p>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Gateways and Sandboxes</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="sandboxes/index.html">About Sandboxes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sandboxes/create-and-manage.html">Create and Manage Sandboxes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sandboxes/providers.html">Providers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sandboxes/policies.html">Customize Sandbox Policies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sandboxes/index.html">About Gateways and Sandboxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sandboxes/manage-sandboxes.html">Sandboxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sandboxes/manage-gateways.html">Gateways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sandboxes/manage-providers.html">Providers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sandboxes/policies.html">Policies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sandboxes/community-sandboxes.html">Community Sandboxes</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Inference Routing</span></p>
@@ -406,13 +350,14 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="reference/gateway-auth.html">Gateway Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/default-policy.html">Default Policy Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/policy-schema.html">Policy Schema Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/support-matrix.html">Support Matrix</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Resources</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="resources/eula.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources/license.html">License</a></li>
 </ul>
 </div>
 </nav></div>
@@ -520,7 +465,8 @@ uncontrolled network activity.</p>
     <div><span class="nc-ps">$ </span>uv pip install openshell</div>
     <div><span class="nc-ps">$ </span>openshell sandbox create <span class="nc-swap"><span>-- <span class="nc-hl">claude</span></span><span>--from <span class="nc-hl">openclaw</span></span><span>-- <span class="nc-hl">opencode</span></span><span>-- <span class="nc-hl">codex</span></span></span><span class="nc-cursor"></span></div>
   </div>
-</div><p>Refer to the <a class="reference internal" href="get-started/quickstart.html"><span class="std std-doc">Quickstart</span></a> for more details.</p>
+</div><p>Run <code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">--help</span></code> in your terminal to see the full CLI reference, including all commands and flags. You can also clone the <a class="reference external" href="https://github.com/NVIDIA/OpenShell" rel="noreferer noopener" target="_blank">OpenShell repository</a> and use the <code class="docutils literal notranslate"><span class="pre">/openshell-cli</span></code> skill to load the CLI reference into your agent.</p>
+<p>Proceed to the <a class="reference internal" href="get-started/quickstart.html"><span class="std std-doc">Quickstart</span></a> for more details.</p>
 </section>
 <hr class="docutils" />
 <section id="explore">
@@ -555,25 +501,25 @@ Quickstart</div>
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-Set Up a Sandbox with GitHub Repo Access</div>
-<p class="sd-card-text">End-to-end guides for GitHub repo access, custom policies, and more.</p>
+Tutorials</div>
+<p class="sd-card-text">Hands-on walkthroughs from first sandbox to custom policies.</p>
 </div>
 <div class="sd-card-footer docutils">
 <p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-bg-secondary sd-bg-text-secondary">Tutorial</span></p>
 </div>
-<a class="sd-stretched-link sd-hide-link-text reference internal" href="tutorials/github-sandbox.html"><span class="doc">Set Up a Sandbox of Claude Code with a Custom GitHub Policy</span></a></div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="tutorials/index.html"><span class="doc">Tutorials</span></a></div>
 </div>
 <div class="sd-col sd-d-flex-row docutils">
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-Sandboxes</div>
-<p class="sd-card-text">Create, manage, and customize sandboxes. Configure policies, providers, and community images for your AI agents.</p>
+Gateways and Sandboxes</div>
+<p class="sd-card-text">Deploy gateways, create sandboxes, configure policies, providers, and community images for your AI agents.</p>
 </div>
 <div class="sd-card-footer docutils">
 <p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-bg-secondary sd-bg-text-secondary">Concept</span></p>
 </div>
-<a class="sd-stretched-link sd-hide-link-text reference internal" href="sandboxes/index.html"><span class="doc">About Sandboxes</span></a></div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="sandboxes/manage-gateways.html"><span class="doc">Deploy and Manage Gateways</span></a></div>
 </div>
 <div class="sd-col sd-d-flex-row docutils">
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">

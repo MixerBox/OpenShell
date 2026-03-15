@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Providers &#8212; NVIDIA OpenShell Developer Guide</title>
+    <title>Manage Providers and Credentials &#8212; NVIDIA OpenShell Developer Guide</title>
   
   
   
@@ -45,28 +45,21 @@
 
 
 
-    <script src="../_static/documentation_options.js?v=5aa371e9"></script>
+    <script src="../_static/documentation_options.js?v=91d07486"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=6dbb43f8"></script>
     <script src="../_static/search-assets.bundle.js?v=00e3e057"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'sandboxes/providers';</script>
-    <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.0.1';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner =
-            false;
-        </script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'sandboxes/manage-providers';</script>
 
-    <link rel="canonical" href="https://docs.nvidia.com/openshell/latest/sandboxes/providers.html" />
+    <link rel="canonical" href="https://docs.nvidia.com/openshell/latest/sandboxes/manage-providers.html" />
     <link rel="icon" href="../_static/favicon.png"/>
 
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Customize Sandbox Policies" href="policies.html" />
-    <link rel="prev" title="Create and Manage Sandboxes" href="create-and-manage.html" />
+    <link rel="prev" title="Deploy and Manage Gateways" href="manage-gateways.html" />
 
 
 
@@ -156,32 +149,6 @@
   </div>
   
   <div class="col-lg-9 navbar-header-items">
-    
-    <div class="me-auto navbar-header-items__center">
-      
-        <div class="navbar-item">
-
-
-<div class="version-switcher__container dropdown pst-js-only">
-  <button id="pst-version-switcher-button-2"
-    type="button"
-    class="version-switcher__button btn btn-sm dropdown-toggle"
-    data-bs-toggle="dropdown"
-    aria-haspopup="listbox"
-    aria-controls="pst-version-switcher-list-2"
-    aria-label="Version switcher list"
-  >
-    Choose version  <!-- this text may get changed later by javascript -->
-    <span class="caret"></span>
-  </button>
-  <div id="pst-version-switcher-list-2"
-    class="version-switcher__menu dropdown-menu list-group-flush py-0"
-    role="listbox" aria-labelledby="pst-version-switcher-button-2">
-    <!-- dropdown will be populated by javascript on page load -->
-  </div>
-</div></div>
-      
-    </div>
     
     
     <div class="navbar-header-items__end">
@@ -297,35 +264,6 @@
   <div class="sidebar-header-items sidebar-primary__section">
     
     
-      <div class="sidebar-header-items__center">
-        
-          
-          
-            <div class="navbar-item">
-
-
-<div class="version-switcher__container dropdown pst-js-only">
-  <button id="pst-version-switcher-button-3"
-    type="button"
-    class="version-switcher__button btn btn-sm dropdown-toggle"
-    data-bs-toggle="dropdown"
-    aria-haspopup="listbox"
-    aria-controls="pst-version-switcher-list-3"
-    aria-label="Version switcher list"
-  >
-    Choose version  <!-- this text may get changed later by javascript -->
-    <span class="caret"></span>
-  </button>
-  <div id="pst-version-switcher-list-3"
-    class="version-switcher__menu dropdown-menu list-group-flush py-0"
-    role="listbox" aria-labelledby="pst-version-switcher-button-3">
-    <!-- dropdown will be populated by javascript on page load -->
-  </div>
-</div></div>
-          
-        
-      </div>
-    
     
     
       <div class="sidebar-header-items__end">
@@ -385,19 +323,25 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../about/overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../about/architecture.html">How It Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/supported-agents.html">Supported Agents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../about/release-notes.html">Release Notes</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../get-started/quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/github-sandbox.html">GitHub Policy Tutorial</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/first-network-policy.html">First Network Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/github-sandbox.html">GitHub Push Access</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sandboxes</span></p>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Gateways and Sandboxes</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="index.html">About Sandboxes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="create-and-manage.html">Create and Manage Sandboxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">About Gateways and Sandboxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manage-sandboxes.html">Sandboxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manage-gateways.html">Gateways</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Providers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="policies.html">Customize Sandbox Policies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="policies.html">Policies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="community-sandboxes.html">Community Sandboxes</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Inference Routing</span></p>
@@ -407,13 +351,14 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference/gateway-auth.html">Gateway Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/default-policy.html">Default Policy Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/policy-schema.html">Policy Schema Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/support-matrix.html">Support Matrix</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Resources</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../resources/eula.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources/license.html">License</a></li>
 </ul>
 </div>
 </nav></div>
@@ -448,7 +393,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Providers</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Manage Providers and Credentials</span></li>
   </ul>
 </nav>
 </div>
@@ -469,8 +414,8 @@
   SPDX-FileCopyrightText: Copyright (c) 2025-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   SPDX-License-Identifier: Apache-2.0
 -->
-<section class="tex2jax_ignore mathjax_ignore" id="providers">
-<h1>Providers<a class="headerlink" href="#providers" title="Link to this heading">#</a></h1>
+<section class="tex2jax_ignore mathjax_ignore" id="manage-providers-and-credentials">
+<h1>Manage Providers and Credentials<a class="headerlink" href="#manage-providers-and-credentials" title="Link to this heading">#</a></h1>
 <p>AI agents typically need credentials to access external services: an API key for the AI model provider, a token for GitHub or GitLab, and so on. OpenShell manages these credentials as first-class entities called <em>providers</em>.</p>
 <p>Create and manage providers that supply credentials to sandboxes.</p>
 <section id="create-a-provider">
@@ -574,7 +519,7 @@ a provider, attaches it to the sandbox, and launches Claude Code.</p>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">github</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code>, <code class="docutils literal notranslate"><span class="pre">GH_TOKEN</span></code></p></td>
-<td><p>GitHub API, <code class="docutils literal notranslate"><span class="pre">gh</span></code> CLI — refer to <a class="reference internal" href="../tutorials/github-sandbox.html"><span class="doc">Set Up a Sandbox of Claude Code with a Custom GitHub Policy</span></a></p></td>
+<td><p>GitHub API, <code class="docutils literal notranslate"><span class="pre">gh</span></code> CLI — refer to <a class="reference internal" href="../tutorials/github-sandbox.html"><span class="doc">Grant GitHub Push Access to a Sandboxed Agent</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gitlab</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">GITLAB_TOKEN</span></code>, <code class="docutils literal notranslate"><span class="pre">GLAB_TOKEN</span></code>, <code class="docutils literal notranslate"><span class="pre">CI_JOB_TOKEN</span></code></p></td>
@@ -623,12 +568,12 @@ environment variable names and values yourself with <code class="docutils litera
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="create-and-manage.html"
+       href="manage-gateways.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Create and Manage Sandboxes</p>
+        <p class="prev-next-title">Deploy and Manage Gateways</p>
       </div>
     </a>
     <a class="right-next"
