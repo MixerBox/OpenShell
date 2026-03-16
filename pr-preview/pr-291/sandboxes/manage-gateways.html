@@ -524,31 +524,6 @@
 </pre></div>
 </div>
 </section>
-<section id="advanced-start-options">
-<h2>Advanced Start Options<a class="headerlink" href="#advanced-start-options" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Flag</p></th>
-<th class="head"><p>Purpose</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--gpu</span></code></p></td>
-<td><p>Enable NVIDIA GPU passthrough. Requires NVIDIA drivers and the Container Toolkit on the host.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--plaintext</span></code></p></td>
-<td><p>Listen on HTTP instead of mTLS. Use behind a TLS-terminating reverse proxy.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--disable-gateway-auth</span></code></p></td>
-<td><p>Skip mTLS client certificate checks. Use when a reverse proxy cannot forward client certs.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--registry-token</span></code></p></td>
-<td><p>GitHub PAT with <code class="docutils literal notranslate"><span class="pre">read:packages</span></code> scope for pulling container images from ghcr.io. Also configurable with <code class="docutils literal notranslate"><span class="pre">OPENSHELL_REGISTRY_TOKEN</span></code>.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="stop-and-destroy">
 <h2>Stop and Destroy<a class="headerlink" href="#stop-and-destroy" title="Link to this heading">#</a></h2>
 <p>Stop a gateway while preserving its state for later restart:</p>
@@ -655,7 +630,6 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manage-multiple-gateways">Manage Multiple Gateways</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-start-options">Advanced Start Options</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stop-and-destroy">Stop and Destroy</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshoot">Troubleshoot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>

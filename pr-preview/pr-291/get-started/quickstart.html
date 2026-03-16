@@ -421,21 +421,18 @@
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
 <p>Before you begin, make sure you have:</p>
 <ul class="simple">
-<li><p>Python 3.12 or later.</p></li>
-<li><p><a class="reference external" href="https://docs.astral.sh/uv/" rel="noreferer noopener" target="_blank">uv</a> installed.</p></li>
 <li><p>Docker Desktop running on your machine.</p></li>
 </ul>
 <p>For a complete list of requirements, refer to <a class="reference internal" href="../reference/support-matrix.html"><span class="doc">Support Matrix</span></a>.</p>
 </section>
 <section id="install-the-openshell-cli">
 <h2>Install the OpenShell CLI<a class="headerlink" href="#install-the-openshell-cli" title="Link to this heading">#</a></h2>
-<p>Install the <code class="docutils literal notranslate"><span class="pre">openshell</span></code> package into a virtual environment.</p>
-<p>Activate your virtual environment:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+<p>Run the install script:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-LsSf<span class="w"> </span>https://raw.githubusercontent.com/NVIDIA/OpenShell/main/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
 </pre></div>
 </div>
-<p>Install the CLI:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>openshell
+<p>If you prefer <a class="reference external" href="https://docs.astral.sh/uv/" rel="noreferer noopener" target="_blank">uv</a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>openshell
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -443,13 +440,75 @@
 <p>Run <code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">--help</span></code> in your terminal to see the full CLI reference, including all commands and flags. You can also clone the <a class="reference external" href="https://github.com/NVIDIA/OpenShell" rel="noreferer noopener" target="_blank">NVIDIA OpenShell GitHub repository</a> and use the <code class="docutils literal notranslate"><span class="pre">/openshell-cli</span></code> skill to load the CLI reference into your agent.</p>
 </div>
 </section>
+<section id="create-your-first-openshell-sandbox">
+<h2>Create Your First OpenShell Sandbox<a class="headerlink" href="#create-your-first-openshell-sandbox" title="Link to this heading">#</a></h2>
+<p>Create a sandbox and launch an agent inside it.
+Choose the tab that matches your agent:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Claude Code</label><div class="sd-tab-content docutils">
+<p>Run the following command to create a sandbox with Claude Code:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--<span class="w"> </span>claude
+</pre></div>
+</div>
+<p>The CLI prompts you to create a provider from local credentials.
+Type <code class="docutils literal notranslate"><span class="pre">yes</span></code> to continue.
+If <code class="docutils literal notranslate"><span class="pre">ANTHROPIC_API_KEY</span></code> is set in your environment, the CLI picks it up automatically.
+If not, you can configure it from inside the sandbox after it launches.</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+OpenCode</label><div class="sd-tab-content docutils">
+<p>Run the following command to create a sandbox with OpenCode:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--<span class="w"> </span>opencode
+</pre></div>
+</div>
+<p>The CLI prompts you to create a provider from local credentials.
+Type <code class="docutils literal notranslate"><span class="pre">yes</span></code> to continue.
+If <code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code> or <code class="docutils literal notranslate"><span class="pre">OPENROUTER_API_KEY</span></code> is set in your environment, the CLI picks it up automatically.
+If not, you can configure it from inside the sandbox after it launches.</p>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+Codex</label><div class="sd-tab-content docutils">
+<p>Run the following command to create a sandbox with Codex:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--<span class="w"> </span>codex
+</pre></div>
+</div>
+<p>The CLI prompts you to create a provider from local credentials.
+Type <code class="docutils literal notranslate"><span class="pre">yes</span></code> to continue.
+If <code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code> is set in your environment, the CLI picks it up automatically.
+If not, you can configure it from inside the sandbox after it launches.</p>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+OpenClaw</label><div class="sd-tab-content docutils">
+<p>Run the following command to create a sandbox with OpenClaw:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--from<span class="w"> </span>openclaw
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--from</span></code> flag pulls a pre-built sandbox definition from the <a class="reference external" href="https://github.com/NVIDIA/OpenShell-Community" rel="noreferer noopener" target="_blank">OpenShell Community</a> catalog.
+Each definition bundles a container image, a tailored policy, and optional skills into a single package.</p>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-4">
+Community Sandbox</label><div class="sd-tab-content docutils">
+<p>Use the <code class="docutils literal notranslate"><span class="pre">--from</span></code> flag to pull other OpenShell sandbox images from the <a class="reference external" href="https://registry.nvidia.com/" rel="noreferer noopener" target="_blank">NVIDIA Container Registry</a>.
+For example, to pull the <code class="docutils literal notranslate"><span class="pre">base</span></code> image, run the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--from<span class="w"> </span>base
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="deploy-a-gateway-optional">
 <h2>Deploy a Gateway (Optional)<a class="headerlink" href="#deploy-a-gateway-optional" title="Link to this heading">#</a></h2>
 <p>Running <code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">sandbox</span> <span class="pre">create</span></code> without a gateway auto-bootstraps a local one.
 To start the gateway explicitly or deploy to a remote host, choose the tab that matches your setup.</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-0">
+<input checked="checked" id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-5">
 Brev</label><div class="sd-tab-content docutils">
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -462,8 +521,8 @@ Copy the shareable URL for <strong>port 8080</strong>, which is the gateway endp
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-1">
+<input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-6">
 DGX Spark</label><div class="sd-tab-content docutils">
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -475,68 +534,6 @@ DGX Spark</label><div class="sd-tab-content docutils">
 </pre></div>
 </div>
 <p>After <code class="docutils literal notranslate"><span class="pre">openshell</span> <span class="pre">status</span></code> shows the gateway as healthy, all subsequent commands route through the SSH tunnel.</p>
-</div>
-</div>
-</section>
-<section id="create-your-first-openshell-sandbox">
-<h2>Create Your First OpenShell Sandbox<a class="headerlink" href="#create-your-first-openshell-sandbox" title="Link to this heading">#</a></h2>
-<p>Create a sandbox and launch an agent inside it.
-Choose the tab that matches your agent:</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-2">
-Claude Code</label><div class="sd-tab-content docutils">
-<p>Run the following command to create a sandbox with Claude Code:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--<span class="w"> </span>claude
-</pre></div>
-</div>
-<p>The CLI prompts you to create a provider from local credentials.
-Type <code class="docutils literal notranslate"><span class="pre">yes</span></code> to continue.
-If <code class="docutils literal notranslate"><span class="pre">ANTHROPIC_API_KEY</span></code> is set in your environment, the CLI picks it up automatically.
-If not, you can configure it from inside the sandbox after it launches.</p>
-</div>
-<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-3">
-OpenCode</label><div class="sd-tab-content docutils">
-<p>Run the following command to create a sandbox with OpenCode:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--<span class="w"> </span>opencode
-</pre></div>
-</div>
-<p>The CLI prompts you to create a provider from local credentials.
-Type <code class="docutils literal notranslate"><span class="pre">yes</span></code> to continue.
-If <code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code> or <code class="docutils literal notranslate"><span class="pre">OPENROUTER_API_KEY</span></code> is set in your environment, the CLI picks it up automatically.
-If not, you can configure it from inside the sandbox after it launches.</p>
-</div>
-<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-4">
-Codex</label><div class="sd-tab-content docutils">
-<p>Run the following command to create a sandbox with Codex:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--<span class="w"> </span>codex
-</pre></div>
-</div>
-<p>The CLI prompts you to create a provider from local credentials.
-Type <code class="docutils literal notranslate"><span class="pre">yes</span></code> to continue.
-If <code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code> is set in your environment, the CLI picks it up automatically.
-If not, you can configure it from inside the sandbox after it launches.</p>
-</div>
-<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-5">
-OpenClaw</label><div class="sd-tab-content docutils">
-<p>Run the following command to create a sandbox with OpenClaw:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--from<span class="w"> </span>openclaw
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">--from</span></code> flag pulls a pre-built sandbox definition from the <a class="reference external" href="https://github.com/NVIDIA/OpenShell-Community" rel="noreferer noopener" target="_blank">OpenShell Community</a> catalog.
-Each definition bundles a container image, a tailored policy, and optional skills into a single package.</p>
-</div>
-<input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-6">
-Community Sandbox</label><div class="sd-tab-content docutils">
-<p>Use the <code class="docutils literal notranslate"><span class="pre">--from</span></code> flag to pull other OpenShell sandbox images from the <a class="reference external" href="https://registry.nvidia.com/" rel="noreferer noopener" target="_blank">NVIDIA Container Registry</a>.
-For example, to pull the <code class="docutils literal notranslate"><span class="pre">base</span></code> image, run the following command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openshell<span class="w"> </span>sandbox<span class="w"> </span>create<span class="w"> </span>--from<span class="w"> </span>base
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -593,8 +590,8 @@ For example, to pull the <code class="docutils literal notranslate"><span class=
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-the-openshell-cli">Install the OpenShell CLI</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deploy-a-gateway-optional">Deploy a Gateway (Optional)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-your-first-openshell-sandbox">Create Your First OpenShell Sandbox</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deploy-a-gateway-optional">Deploy a Gateway (Optional)</a></li>
 </ul>
   </nav></div>
 
