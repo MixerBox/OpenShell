@@ -54,6 +54,7 @@ The incremental deploy (`cluster-deploy-fast.sh`) fingerprints local Git changes
 | `crates/openshell-server/*`, `Dockerfile.gateway` | Gateway |
 | `crates/openshell-sandbox/*`, `crates/openshell-policy/*` | Supervisor |
 | `deploy/helm/openshell/*` | Helm upgrade |
+| `Dockerfile.cluster`, cluster entrypoint/healthcheck, kube manifests, bootstrap scripts | Full cluster bootstrap |
 
 When no local changes are detected, the command is a no-op.
 

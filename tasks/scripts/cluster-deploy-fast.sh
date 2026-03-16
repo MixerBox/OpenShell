@@ -101,6 +101,7 @@ supervisor_reconcile_failure_reason=""
 state_gateway_fingerprint=""
 state_supervisor_fingerprint=""
 state_helm_fingerprint=""
+state_cluster_infra_fingerprint=""
 
 mkdir -p "${DEPLOY_REPORT_DIR}"
 
@@ -353,9 +354,14 @@ helm_requested_by_gateway_build=0
 previous_gateway_fingerprint=""
 previous_supervisor_fingerprint=""
 previous_helm_fingerprint=""
+previous_cluster_infra_fingerprint=""
 current_gateway_fingerprint=""
 current_supervisor_fingerprint=""
 current_helm_fingerprint=""
+current_cluster_infra_fingerprint=""
+cluster_infra_worktree_change=0
+requires_cluster_bootstrap=0
+cluster_bootstrap_reason=""
 
 if [[ "$#" -gt 0 ]]; then
   explicit_target=1
@@ -427,6 +433,9 @@ if [[ -f "${DEPLOY_FAST_STATE_FILE}" ]]; then
       helm)
         previous_helm_fingerprint=${value}
         ;;
+      cluster_infra)
+        previous_cluster_infra_fingerprint=${value}
+        ;;
     esac
   done < "${DEPLOY_FAST_STATE_FILE}"
 
@@ -434,6 +443,7 @@ if [[ -f "${DEPLOY_FAST_STATE_FILE}" ]]; then
     previous_gateway_fingerprint=""
     previous_supervisor_fingerprint=""
     previous_helm_fingerprint=""
+    previous_cluster_infra_fingerprint=""
   fi
 
   # Invalidate gateway and helm fingerprints when the cluster container has
@@ -499,6 +509,27 @@ matches_helm() {
   esac
 }
 
+matches_cluster_infra() {
+  local path=$1
+  case "${path}" in
+    deploy/docker/Dockerfile.cluster|deploy/docker/cluster-entrypoint.sh|deploy/docker/cluster-healthcheck.sh)
+      return 0
+      ;;
+    deploy/kube/manifests/*|deploy/kube/gpu-manifests/*)
+      return 0
+      ;;
+    tasks/scripts/cluster-bootstrap.sh|tasks/scripts/docker-build-cluster.sh)
+      return 0
+      ;;
+    crates/openshell-bootstrap/*)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
 compute_fingerprint() {
   local component=$1
   local payload=""
@@ -518,6 +549,9 @@ compute_fingerprint() {
       ;;
     helm)
       committed_trees=$(git ls-tree HEAD deploy/helm/openshell/ 2>/dev/null || true)
+      ;;
+    cluster_infra)
+      committed_trees=$(git ls-tree HEAD deploy/docker/Dockerfile.cluster deploy/docker/cluster-entrypoint.sh deploy/docker/cluster-healthcheck.sh deploy/kube/manifests/ deploy/kube/gpu-manifests/ tasks/scripts/cluster-bootstrap.sh tasks/scripts/docker-build-cluster.sh crates/openshell-bootstrap/ 2>/dev/null || true)
       ;;
   esac
   if [[ -n "${committed_trees}" ]]; then
@@ -542,6 +576,11 @@ compute_fingerprint() {
           continue
         fi
         ;;
+      cluster_infra)
+        if ! matches_cluster_infra "${path}"; then
+          continue
+        fi
+        ;;
     esac
 
     if [[ -e "${path}" ]]; then
@@ -562,6 +601,38 @@ compute_fingerprint() {
 current_gateway_fingerprint=$(compute_fingerprint gateway)
 current_supervisor_fingerprint=$(compute_fingerprint supervisor)
 current_helm_fingerprint=$(compute_fingerprint helm)
+current_cluster_infra_fingerprint=$(compute_fingerprint cluster_infra)
+
+for path in "${changed_files[@]}"; do
+  if matches_cluster_infra "${path}"; then
+    cluster_infra_worktree_change=1
+    break
+  fi
+done
+
+if [[ "${cluster_infra_worktree_change}" == "1" ]]; then
+  requires_cluster_bootstrap=1
+  cluster_bootstrap_reason="cluster_infra_worktree_change"
+elif [[ -n "${previous_cluster_infra_fingerprint}" && -n "${current_cluster_infra_fingerprint}" && "${current_cluster_infra_fingerprint}" != "${previous_cluster_infra_fingerprint}" ]]; then
+  requires_cluster_bootstrap=1
+  cluster_bootstrap_reason="cluster_infra_fingerprint_changed"
+fi
+
+if [[ "${requires_cluster_bootstrap}" == "1" ]]; then
+  echo "Cluster infrastructure change detected (${cluster_bootstrap_reason}); escalating to full cluster bootstrap."
+  if [[ "${cluster_infra_worktree_change}" == "1" ]]; then
+    echo "Changed infra paths:"
+    for path in "${changed_files[@]}"; do
+      if matches_cluster_infra "${path}"; then
+        echo "  - ${path}"
+      fi
+    done
+  fi
+  if [[ "${explicit_target}" == "1" ]]; then
+    echo "Note: explicit target '${targets_requested}' overridden to keep deploy behavior deterministic."
+  fi
+  exec tasks/scripts/cluster-bootstrap.sh fast
+fi
 
 if [[ "${explicit_target}" == "0" && "${DEPLOY_FAST_MODE}" == "full" ]]; then
   build_gateway=1
@@ -597,6 +668,7 @@ echo "  helm upgrade:     ${needs_helm_upgrade}"
 echo "  cargo profile:    ${CARGO_BUILD_PROFILE}"
 echo "  readiness timeout:${DEPLOY_FAST_READINESS_TIMEOUT_SECONDS}s"
 echo "  supervisor reconcile: ${DEPLOY_FAST_SUPERVISOR_RECONCILE}"
+echo "  requires bootstrap: ${requires_cluster_bootstrap}"
 
 if [[ "${explicit_target}" == "0" && "${build_gateway}" == "0" && "${build_supervisor}" == "0" && "${needs_helm_upgrade}" == "0" && "${DEPLOY_FAST_MODE}" != "full" ]]; then
   echo "No new local changes since last deploy."
@@ -816,6 +888,7 @@ run_readiness_gate
 state_gateway_fingerprint="${current_gateway_fingerprint}"
 state_supervisor_fingerprint="${current_supervisor_fingerprint}"
 state_helm_fingerprint="${current_helm_fingerprint}"
+state_cluster_infra_fingerprint="${current_cluster_infra_fingerprint}"
 
 if [[ "${explicit_target}" == "1" ]]; then
   state_gateway_fingerprint="${previous_gateway_fingerprint:-}"
@@ -840,6 +913,7 @@ container_id=${current_container_id}
 gateway=${state_gateway_fingerprint}
 supervisor=${state_supervisor_fingerprint}
 helm=${state_helm_fingerprint}
+cluster_infra=${state_cluster_infra_fingerprint}
 EOF
 
 overall_end=$(date +%s)
@@ -877,6 +951,8 @@ cat > "${DEPLOY_REPORT_FILE}" <<EOF
 - supervisor_reconcile_waits: \`${supervisor_reconcile_waits}\`
 - supervisor_reconcile_expected_running: \`${supervisor_reconcile_expected_running}\`
 - supervisor_reconcile_failure_reason: \`${supervisor_reconcile_failure_reason}\`
+- requires_cluster_bootstrap: \`${requires_cluster_bootstrap}\`
+- cluster_bootstrap_reason: \`${cluster_bootstrap_reason}\`
 
 ## Fingerprints
 
@@ -889,6 +965,9 @@ cat > "${DEPLOY_REPORT_FILE}" <<EOF
 - helm_previous: \`${previous_helm_fingerprint}\`
 - helm_current: \`${current_helm_fingerprint}\`
 - helm_state_written: \`${state_helm_fingerprint}\`
+- cluster_infra_previous: \`${previous_cluster_infra_fingerprint}\`
+- cluster_infra_current: \`${current_cluster_infra_fingerprint}\`
+- cluster_infra_state_written: \`${state_cluster_infra_fingerprint}\`
 
 ## Gateway Digests
 
