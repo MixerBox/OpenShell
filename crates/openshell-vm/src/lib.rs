@@ -844,16 +844,18 @@ const GATEWAY_PORT: u16 = 30051;
 fn bootstrap_gateway(kubeconfig: &Path, rootfs: &Path) -> Result<(), VmError> {
     let bootstrap_start = Instant::now();
 
-    // Build cluster metadata early — it only depends on knowing the port and
-    // cluster name, not on the cluster being ready.
-    let metadata = navigator_bootstrap::ClusterMetadata {
+    // Build gateway metadata early — it only depends on knowing the port and
+    // gateway name, not on the cluster being ready.
+    let metadata = openshell_bootstrap::GatewayMetadata {
         name: GATEWAY_CLUSTER_NAME.to_string(),
         gateway_endpoint: format!("https://127.0.0.1:{GATEWAY_PORT}"),
         is_remote: false,
         gateway_port: GATEWAY_PORT,
-        kube_port: Some(6443),
         remote_host: None,
         resolved_host: None,
+        auth_mode: None,
+        edge_team_domain: None,
+        edge_auth_url: None,
     };
 
     // ── Path 1: Pre-baked PKI from build-rootfs.sh ─────────────────
@@ -871,7 +873,7 @@ fn bootstrap_gateway(kubeconfig: &Path, rootfs: &Path) -> Result<(), VmError> {
                 .map_err(|e| VmError::Bootstrap(format!("failed to read {name}: {e}")))
         };
 
-        let pki_bundle = navigator_bootstrap::pki::PkiBundle {
+        let pki_bundle = openshell_bootstrap::pki::PkiBundle {
             ca_cert_pem: read("ca.crt")?,
             ca_key_pem: read("ca.key")?,
             server_cert_pem: read("server.crt")?,
@@ -881,13 +883,13 @@ fn bootstrap_gateway(kubeconfig: &Path, rootfs: &Path) -> Result<(), VmError> {
         };
 
         // Store metadata and credentials on the host.
-        navigator_bootstrap::store_cluster_metadata(GATEWAY_CLUSTER_NAME, &metadata)
+        openshell_bootstrap::store_gateway_metadata(GATEWAY_CLUSTER_NAME, &metadata)
             .map_err(|e| VmError::Bootstrap(format!("failed to store metadata: {e}")))?;
 
-        navigator_bootstrap::mtls::store_pki_bundle(GATEWAY_CLUSTER_NAME, &pki_bundle)
+        openshell_bootstrap::mtls::store_pki_bundle(GATEWAY_CLUSTER_NAME, &pki_bundle)
             .map_err(|e| VmError::Bootstrap(format!("failed to store mTLS creds: {e}")))?;
 
-        navigator_bootstrap::save_active_cluster(GATEWAY_CLUSTER_NAME)
+        openshell_bootstrap::save_active_gateway(GATEWAY_CLUSTER_NAME)
             .map_err(|e| VmError::Bootstrap(format!("failed to set active cluster: {e}")))?;
 
         eprintln!(
@@ -924,10 +926,10 @@ fn bootstrap_gateway(kubeconfig: &Path, rootfs: &Path) -> Result<(), VmError> {
 
     // ── Path 3: Cold boot (no pre-baked state) ─────────────────────
     eprintln!("Generating TLS certificates...");
-    let pki_bundle = navigator_bootstrap::pki::generate_pki(&[])
+    let pki_bundle = openshell_bootstrap::pki::generate_pki(&[])
         .map_err(|e| VmError::Bootstrap(format!("PKI generation failed: {e}")))?;
 
-    navigator_bootstrap::store_cluster_metadata(GATEWAY_CLUSTER_NAME, &metadata)
+    openshell_bootstrap::store_gateway_metadata(GATEWAY_CLUSTER_NAME, &metadata)
         .map_err(|e| VmError::Bootstrap(format!("failed to store cluster metadata: {e}")))?;
 
     let ns_start = Instant::now();
@@ -938,10 +940,10 @@ fn bootstrap_gateway(kubeconfig: &Path, rootfs: &Path) -> Result<(), VmError> {
     eprintln!("Creating TLS secrets...");
     apply_tls_secrets(kc, &pki_bundle)?;
 
-    navigator_bootstrap::mtls::store_pki_bundle(GATEWAY_CLUSTER_NAME, &pki_bundle)
+    openshell_bootstrap::mtls::store_pki_bundle(GATEWAY_CLUSTER_NAME, &pki_bundle)
         .map_err(|e| VmError::Bootstrap(format!("failed to store mTLS credentials: {e}")))?;
 
-    navigator_bootstrap::save_active_cluster(GATEWAY_CLUSTER_NAME)
+    openshell_bootstrap::save_active_gateway(GATEWAY_CLUSTER_NAME)
         .map_err(|e| VmError::Bootstrap(format!("failed to set active cluster: {e}")))?;
 
     eprintln!(
@@ -1238,7 +1240,7 @@ fn wait_for_namespace(kubeconfig: &str) -> Result<(), VmError> {
 /// Uses `kubectl apply -f -` on the host, piping JSON manifests via stdin.
 fn apply_tls_secrets(
     kubeconfig: &str,
-    bundle: &navigator_bootstrap::pki::PkiBundle,
+    bundle: &openshell_bootstrap::pki::PkiBundle,
 ) -> Result<(), VmError> {
     use base64::Engine;
     use base64::engine::general_purpose::STANDARD;
@@ -1249,7 +1251,7 @@ fn apply_tls_secrets(
             "apiVersion": "v1",
             "kind": "Secret",
             "metadata": {
-                "name": navigator_bootstrap::constants::SERVER_TLS_SECRET_NAME,
+                "name": openshell_bootstrap::constants::SERVER_TLS_SECRET_NAME,
                 "namespace": "navigator"
             },
             "type": "kubernetes.io/tls",
@@ -1263,7 +1265,7 @@ fn apply_tls_secrets(
             "apiVersion": "v1",
             "kind": "Secret",
             "metadata": {
-                "name": navigator_bootstrap::constants::SERVER_CLIENT_CA_SECRET_NAME,
+                "name": openshell_bootstrap::constants::SERVER_CLIENT_CA_SECRET_NAME,
                 "namespace": "navigator"
             },
             "type": "Opaque",
@@ -1276,7 +1278,7 @@ fn apply_tls_secrets(
             "apiVersion": "v1",
             "kind": "Secret",
             "metadata": {
-                "name": navigator_bootstrap::constants::CLIENT_TLS_SECRET_NAME,
+                "name": openshell_bootstrap::constants::CLIENT_TLS_SECRET_NAME,
                 "namespace": "navigator"
             },
             "type": "Opaque",

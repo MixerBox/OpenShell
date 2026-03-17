@@ -11,7 +11,7 @@
 //! All tests are `#[ignore]` — run them explicitly:
 //!
 //! ```sh
-//! cargo test -p navigator-vm --test gateway_integration -- --ignored
+//! cargo test -p openshell-vm --test gateway_integration -- --ignored
 //! ```
 
 #![allow(unsafe_code)]
