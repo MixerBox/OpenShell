@@ -35,7 +35,9 @@ The configuration consists of two values:
 | Provider record | The credential backend OpenShell uses to authenticate with the upstream model host. |
 | Model ID | The model to use for generation requests. |
 
-## Step 1: Create a Provider
+For a list of tested providers and their base URLs, refer to [Supported Inference Providers](../sandboxes/manage-providers.md#supported-inference-providers).
+
+## Create a Provider
 
 Create a provider that holds the backend credentials you want OpenShell to use.
 
@@ -51,7 +53,7 @@ This reads `NVIDIA_API_KEY` from your environment.
 
 ::::
 
-::::{tab-item} OpenAI-compatible provider
+::::{tab-item} OpenAI-compatible Provider
 
 Any cloud provider that exposes an OpenAI-compatible API works with the `openai` provider type. You need three values from the provider: the base URL, an API key, and a model name.
 
@@ -67,7 +69,7 @@ Replace the base URL and API key with the values from your provider. Refer to yo
 
 ::::
 
-::::{tab-item} Local / self-hosted endpoint
+::::{tab-item} Local Endpoint
 
 ```console
 $ openshell provider create \
@@ -93,7 +95,7 @@ This reads `ANTHROPIC_API_KEY` from your environment.
 
 :::::
 
-## Step 2: Set Inference Routing
+## Set Inference Routing
 
 Point `inference.local` at that provider and choose the model to use:
 
@@ -103,7 +105,7 @@ $ openshell inference set \
     --model nvidia/nemotron-3-nano-30b-a3b
 ```
 
-## Step 3: Verify the Active Config
+## Verify the Active Config
 
 Confirm that the provider and model are set correctly:
 
@@ -116,7 +118,7 @@ Gateway inference:
   Version: 1
 ```
 
-## Step 4: Update Part of the Config
+## Update Part of the Config
 
 Use `update` when you want to change only one field:
 
@@ -130,7 +132,7 @@ Or switch providers without repeating the current model:
 $ openshell inference update --provider openai-prod
 ```
 
-## Use It from a Sandbox
+## Use the Local Endpoint from a Sandbox
 
 After inference is configured, code inside any sandbox can call `https://inference.local` directly:
 

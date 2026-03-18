@@ -144,6 +144,22 @@ Use the `generic` type for any service not listed above. You define the
 environment variable names and values yourself with `--credential`.
 :::
 
+## Supported Inference Providers
+
+The following providers have been tested with `inference.local`. Any provider that exposes an OpenAI-compatible API works with the `openai` type. Set `--config OPENAI_BASE_URL` to the provider's base URL and `--credential OPENAI_API_KEY` to your API key.
+
+| Provider | Type | Base URL | API Key Variable |
+|---|---|---|---|
+| NVIDIA API Catalog | `nvidia` | `https://integrate.api.nvidia.com/v1` | `NVIDIA_API_KEY` |
+| Anthropic | `anthropic` | `https://api.anthropic.com` | `ANTHROPIC_API_KEY` |
+| Baseten | `openai` | `https://inference.baseten.co/v1` | `OPENAI_API_KEY` |
+| Bitdeer AI | `openai` | `https://api-inference.bitdeer.ai/v1` | `OPENAI_API_KEY` |
+| Deepinfra | `openai` | `https://api.deepinfra.com/v1/openai` | `OPENAI_API_KEY` |
+| Ollama (local) | `openai` | `http://host.openshell.internal:11434/v1` | `OPENAI_API_KEY` |
+| LM Studio (local) | `openai` | `http://host.openshell.internal:1234/v1` | `OPENAI_API_KEY` |
+
+Refer to your provider's documentation for the correct base URL, available models, and API key setup. To configure inference routing, refer to {doc}`/inference/configure`.
+
 ## Next Steps
 
 Explore related topics:
