@@ -13,6 +13,7 @@ mod identity;
 pub mod l7;
 pub mod log_push;
 pub mod mechanistic_mapper;
+pub mod netns_connect;
 pub mod opa;
 mod policy;
 mod process;
@@ -21,6 +22,8 @@ pub mod proxy;
 mod sandbox;
 mod secrets;
 mod ssh;
+#[cfg(target_os = "linux")]
+mod tcp_forward;
 
 use miette::{IntoDiagnostic, Result};
 #[cfg(target_os = "linux")]
@@ -162,6 +165,7 @@ pub async fn run_sandbox(
     _health_check: bool,
     _health_port: u16,
     inference_routes: Option<String>,
+    forward_ports: Vec<u16>,
 ) -> Result<i32> {
     let (program, args) = command
         .split_first()
@@ -288,10 +292,22 @@ pub async fn run_sandbox(
         None
     };
 
+    // Spawn TCP port forwarders (after netns creation, before proxy + SSH server).
+    // Each forwarded port gets a listener on 0.0.0.0:<port> in the outer namespace,
+    // bridging connections to 127.0.0.1:<port> inside the sandbox network namespace.
+    #[cfg(target_os = "linux")]
+    if !forward_ports.is_empty() {
+        let fwd_netns_fd = netns.as_ref().and_then(NetworkNamespace::ns_fd);
+        tcp_forward::spawn_tcp_forwards(forward_ports, fwd_netns_fd).await;
+    }
+
     // On non-Linux, network namespace isolation is not supported
     #[cfg(not(target_os = "linux"))]
     #[allow(clippy::no_effect_underscore_binding)]
     let _netns: Option<()> = None;
+
+    #[cfg(not(target_os = "linux"))]
+    drop(forward_ports);
 
     // Shared PID: set after process spawn so the proxy can look up
     // the entrypoint process's /proc/net/tcp for identity binding.
