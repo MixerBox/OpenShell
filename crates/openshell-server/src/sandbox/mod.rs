@@ -1077,24 +1077,10 @@ fn merge_containers(spec: &mut serde_json::Map<String, serde_json::Value>, overr
                 continue; // Skip the name field itself
             }
             if value.is_array() {
-                // Append array fields (envFrom, volumeMounts, ports, etc.)
-                // For `env`, override entries with matching `name` replace existing ones
-                // (K8s uses the first occurrence, so we must replace, not append duplicates).
+                // Append array fields (envFrom, volumeMounts, env, ports, etc.)
                 if let Some(arr) = existing_obj.get_mut(key).and_then(|v| v.as_array_mut()) {
                     if let Some(new_items) = value.as_array() {
-                        for item in new_items {
-                            if key == "env" {
-                                if let Some(name) = item.get("name").and_then(|n| n.as_str()) {
-                                    if let Some(pos) = arr.iter().position(|e| {
-                                        e.get("name").and_then(|n| n.as_str()) == Some(name)
-                                    }) {
-                                        arr[pos] = item.clone();
-                                        continue;
-                                    }
-                                }
-                            }
-                            arr.push(item.clone());
-                        }
+                        arr.extend(new_items.iter().cloned());
                     }
                 } else {
                     existing_obj.insert(key.clone(), value.clone());
