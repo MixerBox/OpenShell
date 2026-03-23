@@ -101,6 +101,11 @@ server:
   # Disable TLS entirely — the server listens on plaintext HTTP.
   # Set to true when a reverse proxy / tunnel terminates TLS at the edge.
   disableTls: false
+  # JSON-encoded pod spec overrides for sandbox pods. Applied to all sandboxes
+  # created by this gateway. Use for cluster-level defaults like node affinity,
+  # tolerations, and shared volumes.
+  # Example: '{"affinity":{"nodeAffinity":{...}},"tolerations":[{...}]}'
+  sandboxPodOverrides: ""
   tls:
     # K8s secret (type kubernetes.io/tls) with tls.crt and tls.key for the server
     certSecretName: openshell-server-tls

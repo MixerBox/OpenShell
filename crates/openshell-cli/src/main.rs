@@ -1088,6 +1088,11 @@ enum SandboxCommands {
         #[arg(long, requires = "upload", help_heading = "UPLOAD FLAGS")]
         no_git_ignore: bool,
 
+        /// Path to a JSON file with Kubernetes pod spec overrides.
+        /// Merged into the sandbox pod's spec (e.g., volumes, envFrom, extra volumeMounts).
+        #[arg(long = "pod-override", value_hint = ValueHint::FilePath)]
+        pod_override: Option<String>,
+
         /// Deprecated compatibility flag. Sandboxes are kept by default.
         #[arg(long, hide = true, conflicts_with = "no_keep")]
         keep: bool,
@@ -2069,6 +2074,7 @@ async fn main() -> Result<()> {
                     from,
                     upload,
                     no_git_ignore,
+                    pod_override,
                     keep,
                     no_keep,
                     editor,
@@ -2164,6 +2170,7 @@ async fn main() -> Result<()> {
                                 tty_override,
                                 Some(false),
                                 auto_providers_override,
+                                pod_override.as_deref(),
                                 &tls,
                             ))
                             .await?;
@@ -2186,6 +2193,7 @@ async fn main() -> Result<()> {
                                 tty_override,
                                 bootstrap_override,
                                 auto_providers_override,
+                                pod_override.as_deref(),
                             ))
                             .await?;
                         }

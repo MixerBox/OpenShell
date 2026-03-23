@@ -84,6 +84,13 @@ pub struct Config {
     /// allowing them to reach services running on the Docker host.
     #[serde(default)]
     pub host_gateway_ip: String,
+
+    /// JSON-encoded Kubernetes pod spec overrides for sandbox pods.
+    /// When set, this JSON is parsed and merged into every sandbox pod's
+    /// `podTemplate.spec`. Use for cluster-level defaults like node affinity
+    /// and tolerations that apply to all sandboxes on this gateway.
+    #[serde(default)]
+    pub sandbox_pod_overrides: String,
 }
 
 /// TLS configuration.
@@ -133,6 +140,7 @@ impl Config {
             ssh_session_ttl_secs: default_ssh_session_ttl_secs(),
             client_tls_secret_name: String::new(),
             host_gateway_ip: String::new(),
+            sandbox_pod_overrides: String::new(),
         }
     }
 
@@ -245,6 +253,13 @@ impl Config {
     #[must_use]
     pub fn with_host_gateway_ip(mut self, ip: impl Into<String>) -> Self {
         self.host_gateway_ip = ip.into();
+        self
+    }
+
+    /// Set gateway-level pod spec overrides for sandbox pods.
+    #[must_use]
+    pub fn with_sandbox_pod_overrides(mut self, overrides: impl Into<String>) -> Self {
+        self.sandbox_pod_overrides = overrides.into();
         self
     }
 }
