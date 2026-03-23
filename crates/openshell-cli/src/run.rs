@@ -2034,7 +2034,7 @@ pub async fn sandbox_create(
             let json: serde_json::Value = serde_json::from_str(&content)
                 .into_diagnostic()
                 .wrap_err("failed to parse pod override JSON")?;
-            Ok(json_to_struct(&json))
+            Ok::<_, miette::ErrReport>(json_to_struct(&json))
         })
         .transpose()?;
 
