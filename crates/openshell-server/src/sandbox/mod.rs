@@ -1076,8 +1076,32 @@ fn merge_containers(spec: &mut serde_json::Map<String, serde_json::Value>, overr
             if key == "name" {
                 continue; // Skip the name field itself
             }
-            if value.is_array() {
-                // Append array fields (envFrom, volumeMounts, env, ports, etc.)
+            if key == "env" {
+                // Strategic merge for env: match by "name" field, replace if exists,
+                // append if new (same semantics as K8s strategic merge patch).
+                if let (Some(arr), Some(new_items)) = (
+                    existing_obj.get_mut(key).and_then(|v| v.as_array_mut()),
+                    value.as_array(),
+                ) {
+                    for new_item in new_items {
+                        let new_name = new_item.get("name").and_then(|n| n.as_str());
+                        if let Some(name) = new_name {
+                            if let Some(existing_item) = arr.iter_mut().find(|item| {
+                                item.get("name").and_then(|n| n.as_str()) == Some(name)
+                            }) {
+                                *existing_item = new_item.clone();
+                            } else {
+                                arr.push(new_item.clone());
+                            }
+                        } else {
+                            arr.push(new_item.clone());
+                        }
+                    }
+                } else {
+                    existing_obj.insert(key.clone(), value.clone());
+                }
+            } else if value.is_array() {
+                // Append other array fields (envFrom, volumeMounts, ports, etc.)
                 if let Some(arr) = existing_obj.get_mut(key).and_then(|v| v.as_array_mut()) {
                     if let Some(new_items) = value.as_array() {
                         arr.extend(new_items.iter().cloned());
