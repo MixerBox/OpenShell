@@ -175,4 +175,7 @@ message GetSandboxConfigResponse {
   // When policy_source is GLOBAL, the version of the global policy revision.
   // Zero when no global policy is active or when policy_source is SANDBOX.
   uint32 global_policy_version = 7;
+  // Pending signals queued via SignalSandbox RPC, drained on each poll.
+  // Values are POSIX signal numbers (e.g., 15 = SIGTERM, 10 = SIGUSR1).
+  repeated int32 pending_signals = 8;
 }

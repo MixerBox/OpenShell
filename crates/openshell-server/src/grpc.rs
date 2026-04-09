@@ -28,10 +28,11 @@ use openshell_core::proto::{
     PushSandboxLogsRequest, PushSandboxLogsResponse, RejectDraftChunkRequest,
     RejectDraftChunkResponse, ReportPolicyStatusRequest, ReportPolicyStatusResponse,
     RevokeSshSessionRequest, RevokeSshSessionResponse, SandboxLogLine, SandboxPolicyRevision,
-    SandboxResponse, SandboxStreamEvent, ServiceStatus, SettingScope, SettingValue, SshSession,
-    SubmitPolicyAnalysisRequest, SubmitPolicyAnalysisResponse, UndoDraftChunkRequest,
-    UndoDraftChunkResponse, UpdateConfigRequest, UpdateConfigResponse, UpdateProviderRequest,
-    WatchSandboxRequest, open_shell_server::OpenShell,
+    SandboxResponse, SandboxStreamEvent, ServiceStatus, SettingScope, SettingValue,
+    SignalSandboxRequest, SignalSandboxResponse, SshSession, SubmitPolicyAnalysisRequest,
+    SubmitPolicyAnalysisResponse, UndoDraftChunkRequest, UndoDraftChunkResponse,
+    UpdateConfigRequest, UpdateConfigResponse, UpdateProviderRequest, WatchSandboxRequest,
+    open_shell_server::OpenShell,
 };
 use openshell_core::proto::{
     Sandbox, SandboxPhase, SandboxPolicy as ProtoSandboxPolicy, SandboxTemplate,
@@ -107,6 +108,9 @@ const MAX_PROVIDER_CREDENTIALS_ENTRIES: usize = 32;
 
 /// Maximum number of entries in the provider `config` map.
 const MAX_PROVIDER_CONFIG_ENTRIES: usize = 64;
+
+/// Maximum number of pending signals per sandbox before the queue rejects new entries.
+const MAX_PENDING_SIGNALS: usize = 64;
 
 /// Internal object type for durable gateway-global settings.
 const GLOBAL_SETTINGS_OBJECT_TYPE: &str = "gateway_settings";
@@ -874,6 +878,22 @@ impl OpenShell for OpenShellService {
         let settings = merge_effective_settings(&global_settings, &sandbox_settings)?;
         let config_revision = compute_config_revision(policy.as_ref(), &settings, policy_source);
 
+        // Drain any pending signals queued by SignalSandbox RPC.
+        let pending_signals = self
+            .state
+            .pending_signals
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .remove(&sandbox_id)
+            .unwrap_or_default();
+        if !pending_signals.is_empty() {
+            debug!(
+                sandbox_id = %sandbox_id,
+                count = pending_signals.len(),
+                "GetSandboxConfig: drained pending signals for supervisor poll"
+            );
+        }
+
         Ok(Response::new(GetSandboxConfigResponse {
             policy,
             version,
@@ -882,6 +902,7 @@ impl OpenShell for OpenShellService {
             config_revision,
             policy_source: policy_source.into(),
             global_policy_version,
+            pending_signals,
         }))
     }
 
@@ -2436,6 +2457,59 @@ impl OpenShell for OpenShellService {
         );
 
         Ok(Response::new(GetDraftHistoryResponse { entries }))
+    }
+
+    async fn signal_sandbox(
+        &self,
+        request: Request<SignalSandboxRequest>,
+    ) -> Result<Response<SignalSandboxResponse>, Status> {
+        let req = request.into_inner();
+        if req.name.is_empty() {
+            return Err(Status::invalid_argument("name is required"));
+        }
+        if req.signal == 0 {
+            return Err(Status::invalid_argument("signal must be non-zero"));
+        }
+
+        // Resolve sandbox by name.
+        let sandbox = self
+            .state
+            .store
+            .get_message_by_name::<Sandbox>(&req.name)
+            .await
+            .map_err(|e| Status::internal(format!("fetch sandbox failed: {e}")))?
+            .ok_or_else(|| Status::not_found("sandbox not found"))?;
+
+        if SandboxPhase::try_from(sandbox.phase).ok() != Some(SandboxPhase::Ready) {
+            return Err(Status::failed_precondition("sandbox is not ready"));
+        }
+
+        let sandbox_id = sandbox.id.clone();
+
+        // Queue the signal for delivery on the next supervisor poll.
+        {
+            let mut signals = self
+                .state
+                .pending_signals
+                .lock()
+                .unwrap_or_else(|e| e.into_inner());
+            let queue = signals.entry(sandbox_id.clone()).or_default();
+            if queue.len() >= MAX_PENDING_SIGNALS {
+                return Err(Status::resource_exhausted(format!(
+                    "pending signal queue full ({MAX_PENDING_SIGNALS}); wait for supervisor to drain"
+                )));
+            }
+            queue.push(req.signal);
+        }
+
+        info!(
+            sandbox_id = %sandbox_id,
+            sandbox_name = %req.name,
+            signal = req.signal,
+            "SignalSandbox: signal queued for delivery"
+        );
+
+        Ok(Response::new(SignalSandboxResponse { queued: true }))
     }
 }
 

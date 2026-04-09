@@ -129,6 +129,13 @@ service OpenShell {
 
   // Get decision history for a sandbox's draft policy.
   rpc GetDraftHistory(GetDraftHistoryRequest) returns (GetDraftHistoryResponse);
+
+  // Send a POSIX signal to the sandboxed process.
+  //
+  // The signal is queued and delivered on the supervisor's next config poll
+  // cycle (typically within 10 seconds). The RPC returns immediately after
+  // queuing — it does not wait for delivery confirmation.
+  rpc SignalSandbox(SignalSandboxRequest) returns (SignalSandboxResponse);
 }
 
 // Health check request.
@@ -851,4 +858,22 @@ message DraftHistoryEntry {
 message GetDraftHistoryResponse {
   // Chronological decision history.
   repeated DraftHistoryEntry entries = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Signal sandbox messages
+// ---------------------------------------------------------------------------
+
+// Send a signal to the sandboxed process.
+message SignalSandboxRequest {
+  // Sandbox name (canonical lookup key).
+  string name = 1;
+  // POSIX signal number (e.g., 15 = SIGTERM, 10 = SIGUSR1).
+  int32 signal = 2;
+}
+
+// Signal sandbox response.
+message SignalSandboxResponse {
+  // True when the signal was successfully queued for delivery.
+  bool queued = 1;
 }

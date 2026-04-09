@@ -224,6 +224,8 @@ pub struct SettingsPollResult {
     pub settings: std::collections::HashMap<String, openshell_core::proto::EffectiveSetting>,
     /// When `policy_source` is `Global`, the version of the global policy revision.
     pub global_policy_version: u32,
+    /// Pending signals queued via `SignalSandbox` RPC.
+    pub pending_signals: Vec<i32>,
 }
 
 impl CachedOpenShellClient {
@@ -261,6 +263,7 @@ impl CachedOpenShellClient {
                 .unwrap_or(PolicySource::Unspecified),
             settings: inner.settings,
             global_policy_version: inner.global_policy_version,
+            pending_signals: inner.pending_signals,
         })
     }
 

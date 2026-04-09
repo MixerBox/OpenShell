@@ -596,9 +596,10 @@ pub async fn run_sandbox(
             .and_then(|v| v.parse().ok())
             .unwrap_or(10);
 
+        let poll_pid = entrypoint_pid.clone();
         tokio::spawn(async move {
             if let Err(e) =
-                run_policy_poll_loop(&poll_endpoint, &poll_id, &poll_engine, poll_interval_secs)
+                run_policy_poll_loop(&poll_endpoint, &poll_id, &poll_engine, poll_interval_secs, poll_pid)
                     .await
             {
                 warn!(error = %e, "Policy poll loop exited with error");
@@ -1323,6 +1324,7 @@ async fn run_policy_poll_loop(
     sandbox_id: &str,
     opa_engine: &Arc<OpaEngine>,
     interval_secs: u64,
+    entrypoint_pid: Arc<AtomicU32>,
 ) -> Result<()> {
     use crate::grpc_client::CachedOpenShellClient;
     use openshell_core::proto::PolicySource;
@@ -1338,6 +1340,7 @@ async fn run_policy_poll_loop(
     // Initialize revision from the first poll.
     match client.poll_settings(sandbox_id).await {
         Ok(result) => {
+            deliver_pending_signals(&result.pending_signals, &entrypoint_pid);
             current_config_revision = result.config_revision;
             current_policy_hash = result.policy_hash.clone();
             current_settings = result.settings;
@@ -1362,6 +1365,9 @@ async fn run_policy_poll_loop(
                 continue;
             }
         };
+
+        // Deliver any pending signals before checking config revision.
+        deliver_pending_signals(&result.pending_signals, &entrypoint_pid);
 
         if result.config_revision == current_config_revision {
             continue;
@@ -1435,6 +1441,42 @@ async fn run_policy_poll_loop(
         current_config_revision = result.config_revision;
         current_policy_hash = result.policy_hash;
         current_settings = result.settings;
+    }
+}
+
+/// Deliver pending signals from a poll response to the entrypoint process.
+fn deliver_pending_signals(signals: &[i32], entrypoint_pid: &AtomicU32) {
+    if signals.is_empty() {
+        return;
+    }
+    let pid = entrypoint_pid.load(Ordering::Acquire);
+    if pid == 0 {
+        warn!(
+            count = signals.len(),
+            "Pending signals received but entrypoint process not yet started"
+        );
+        return;
+    }
+    let Ok(raw_pid) = i32::try_from(pid) else {
+        warn!(pid, "Entrypoint PID exceeds i32 range, cannot deliver signals");
+        return;
+    };
+    for sig_num in signals {
+        match nix::sys::signal::Signal::try_from(*sig_num) {
+            Ok(sig) => {
+                match nix::sys::signal::kill(nix::unistd::Pid::from_raw(raw_pid), sig) {
+                    Ok(()) => {
+                        info!(pid, signal = %sig, "Pending signal delivered");
+                    }
+                    Err(e) => {
+                        warn!(pid, signal = %sig, error = %e, "Failed to deliver pending signal");
+                    }
+                }
+            }
+            Err(_) => {
+                warn!(signal = sig_num, "Ignoring invalid signal number");
+            }
+        }
     }
 }
 
