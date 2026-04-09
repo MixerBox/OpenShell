@@ -94,6 +94,13 @@ struct Args {
     /// Port for health check endpoint.
     #[arg(long, default_value = "8080")]
     health_port: u16,
+
+    /// Comma-separated list of ports to forward from outer to inner namespace.
+    /// For each port, binds `0.0.0.0:<port>` in the outer (host) namespace and
+    /// bridges connections to `127.0.0.1:<port>` inside the sandbox network
+    /// namespace. This enables K8s readiness probes and ingress without SSH.
+    #[arg(long, env = "OPENSHELL_FORWARD_PORTS")]
+    forward_ports: Option<String>,
 }
 
 #[tokio::main]
@@ -204,7 +211,16 @@ async fn main() -> Result<()> {
         vec!["/bin/bash".to_string()]
     };
 
-    info!(command = ?command, "Starting sandbox");
+    let forward_ports: Vec<u16> = args
+        .forward_ports
+        .map(|s| {
+            s.split(',')
+                .filter_map(|p| p.trim().parse().ok())
+                .collect()
+        })
+        .unwrap_or_default();
+
+    info!(command = ?command, ?forward_ports, "Starting sandbox");
     // Note: "Starting sandbox" stays as plain info!() since the OCSF context
     // is not yet initialized at this point (run_sandbox hasn't been called).
     // The shorthand layer will render it in fallback format.
@@ -226,6 +242,7 @@ async fn main() -> Result<()> {
         args.health_port,
         args.inference_routes,
         ocsf_enabled,
+        forward_ports,
     )
     .await?;
 

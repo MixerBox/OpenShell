@@ -72,6 +72,10 @@ pub struct ServerState {
     /// set/delete operation, including the precedence check on sandbox
     /// mutations that reads global state.
     pub settings_mutex: tokio::sync::Mutex<()>,
+
+    /// Pending signals queued by `SignalSandbox` RPC, keyed by sandbox ID.
+    /// Drained when the supervisor polls `GetSandboxConfig`.
+    pub pending_signals: Mutex<HashMap<String, Vec<i32>>>,
 }
 
 fn is_benign_tls_handshake_failure(error: &std::io::Error) -> bool {
@@ -102,6 +106,7 @@ impl ServerState {
             ssh_connections_by_token: Mutex::new(HashMap::new()),
             ssh_connections_by_sandbox: Mutex::new(HashMap::new()),
             settings_mutex: tokio::sync::Mutex::new(()),
+            pending_signals: Mutex::new(HashMap::new()),
         }
     }
 }
@@ -135,6 +140,7 @@ pub async fn run_server(config: Config, tracing_log_bus: TracingLogBus) -> Resul
         config.ssh_handshake_skew_secs,
         config.client_tls_secret_name.clone(),
         config.host_gateway_ip.clone(),
+        config.sandbox_pod_overrides.clone(),
     )
     .await
     .map_err(|e| Error::execution(format!("failed to create kubernetes client: {e}")))?;

@@ -17,7 +17,7 @@ use openshell_core::proto::{
     DeleteSandboxResponse, ExecSandboxEvent, ExecSandboxExit, ExecSandboxRequest,
     ExecSandboxStderr, ExecSandboxStdout, GetSandboxRequest, ListSandboxesRequest,
     ListSandboxesResponse, RevokeSshSessionRequest, RevokeSshSessionResponse, SandboxResponse,
-    SandboxStreamEvent, WatchSandboxRequest,
+    SandboxStreamEvent, SignalSandboxRequest, SignalSandboxResponse, WatchSandboxRequest,
 };
 use openshell_core::proto::{Sandbox, SandboxPhase, SandboxTemplate, SshSession};
 use prost::Message;
@@ -1217,6 +1217,62 @@ fn hmac_sha256(key: &[u8], data: &[u8]) -> String {
     mac.update(data);
     let result = mac.finalize().into_bytes();
     hex::encode(result)
+}
+
+// ---------------------------------------------------------------------------
+// Signal delivery
+// ---------------------------------------------------------------------------
+
+pub(super) async fn handle_signal_sandbox(
+    state: &Arc<ServerState>,
+    request: Request<SignalSandboxRequest>,
+) -> Result<Response<SignalSandboxResponse>, Status> {
+    let req = request.into_inner();
+    if req.name.is_empty() {
+        return Err(Status::invalid_argument("name is required"));
+    }
+    if req.signal == 0 {
+        return Err(Status::invalid_argument("signal must be non-zero"));
+    }
+
+    // Resolve sandbox by name.
+    let sandbox = state
+        .store
+        .get_message_by_name::<Sandbox>(&req.name)
+        .await
+        .map_err(|e| Status::internal(format!("fetch sandbox failed: {e}")))?
+        .ok_or_else(|| Status::not_found("sandbox not found"))?;
+
+    if SandboxPhase::try_from(sandbox.phase).ok() != Some(SandboxPhase::Ready) {
+        return Err(Status::failed_precondition("sandbox is not ready"));
+    }
+
+    let sandbox_id = sandbox.id.clone();
+
+    // Queue the signal for delivery on the next supervisor poll.
+    {
+        let mut signals = state
+            .pending_signals
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        let queue = signals.entry(sandbox_id.clone()).or_default();
+        if queue.len() >= super::MAX_PENDING_SIGNALS {
+            return Err(Status::resource_exhausted(format!(
+                "pending signal queue full ({}); wait for supervisor to drain",
+                super::MAX_PENDING_SIGNALS
+            )));
+        }
+        queue.push(req.signal);
+    }
+
+    info!(
+        sandbox_id = %sandbox_id,
+        sandbox_name = %req.name,
+        signal = req.signal,
+        "SignalSandbox: signal queued for delivery"
+    );
+
+    Ok(Response::new(SignalSandboxResponse { queued: true }))
 }
 
 // ---------------------------------------------------------------------------

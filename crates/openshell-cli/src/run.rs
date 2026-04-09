@@ -1833,6 +1833,46 @@ fn validate_ssh_host(host: &str) -> Result<()> {
     Ok(())
 }
 
+/// Convert a `serde_json::Value` to a `prost_types::Struct`.
+fn json_to_struct(value: &serde_json::Value) -> prost_types::Struct {
+    fn to_prost_value(v: &serde_json::Value) -> prost_types::Value {
+        let kind = match v {
+            serde_json::Value::Null => prost_types::value::Kind::NullValue(0),
+            serde_json::Value::Bool(b) => prost_types::value::Kind::BoolValue(*b),
+            serde_json::Value::Number(n) => {
+                prost_types::value::Kind::NumberValue(n.as_f64().unwrap_or_default())
+            }
+            serde_json::Value::String(s) => {
+                prost_types::value::Kind::StringValue(s.clone())
+            }
+            serde_json::Value::Array(arr) => {
+                prost_types::value::Kind::ListValue(prost_types::ListValue {
+                    values: arr.iter().map(to_prost_value).collect(),
+                })
+            }
+            serde_json::Value::Object(obj) => {
+                prost_types::value::Kind::StructValue(prost_types::Struct {
+                    fields: obj
+                        .iter()
+                        .map(|(k, v)| (k.clone(), to_prost_value(v)))
+                        .collect(),
+                })
+            }
+        };
+        prost_types::Value { kind: Some(kind) }
+    }
+
+    match value {
+        serde_json::Value::Object(obj) => prost_types::Struct {
+            fields: obj
+                .iter()
+                .map(|(k, v)| (k.clone(), to_prost_value(v)))
+                .collect(),
+        },
+        _ => prost_types::Struct::default(),
+    }
+}
+
 /// Create a sandbox when no gateway is configured.
 ///
 /// Bootstraps a new gateway first, then delegates to [`sandbox_create`].
@@ -1853,6 +1893,7 @@ pub async fn sandbox_create_with_bootstrap(
     tty_override: Option<bool>,
     bootstrap_override: Option<bool>,
     auto_providers_override: Option<bool>,
+    pod_override: Option<&str>,
 ) -> Result<()> {
     if !crate::bootstrap::confirm_bootstrap(bootstrap_override)? {
         return Err(miette::miette!(
@@ -1884,6 +1925,7 @@ pub async fn sandbox_create_with_bootstrap(
         tty_override,
         Some(false),
         auto_providers_override,
+        pod_override,
         &tls,
     )
     .await
@@ -1939,6 +1981,7 @@ pub async fn sandbox_create(
     tty_override: Option<bool>,
     bootstrap_override: Option<bool>,
     auto_providers_override: Option<bool>,
+    pod_override: Option<&str>,
     tls: &TlsOptions,
 ) -> Result<()> {
     if editor.is_some() && !command.is_empty() {
@@ -2027,8 +2070,21 @@ pub async fn sandbox_create(
 
     let policy = load_sandbox_policy(policy)?;
 
-    let template = image.map(|img| SandboxTemplate {
-        image: img,
+    let pod_overrides_struct = pod_override
+        .map(|path| {
+            let content = std::fs::read_to_string(path)
+                .into_diagnostic()
+                .wrap_err_with(|| format!("failed to read pod override file: {path}"))?;
+            let json: serde_json::Value = serde_json::from_str(&content)
+                .into_diagnostic()
+                .wrap_err("failed to parse pod override JSON")?;
+            Ok::<_, miette::ErrReport>(json_to_struct(&json))
+        })
+        .transpose()?;
+
+    let template = Some(SandboxTemplate {
+        image: image.unwrap_or_default(),
+        pod_spec_overrides: pod_overrides_struct,
         ..SandboxTemplate::default()
     });
 

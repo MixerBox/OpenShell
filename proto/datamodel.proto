@@ -45,6 +45,9 @@ message SandboxTemplate {
   map<string, string> environment = 6;
   google.protobuf.Struct resources = 7;
   google.protobuf.Struct volume_claim_templates = 9;
+  // Per-sandbox pod spec overrides (JSON). Merged into podTemplate.spec.
+  // Use for volumes, envFrom, extra volumeMounts, etc.
+  google.protobuf.Struct pod_spec_overrides = 10;
 }
 
 // Sandbox status captured from Kubernetes.

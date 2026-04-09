@@ -13,6 +13,7 @@ mod identity;
 pub mod l7;
 pub mod log_push;
 pub mod mechanistic_mapper;
+pub mod netns_connect;
 pub mod opa;
 mod policy;
 mod process;
@@ -21,6 +22,8 @@ pub mod proxy;
 mod sandbox;
 mod secrets;
 mod ssh;
+#[cfg(target_os = "linux")]
+mod tcp_forward;
 
 use miette::{IntoDiagnostic, Result};
 #[cfg(target_os = "linux")]
@@ -214,6 +217,7 @@ pub async fn run_sandbox(
     _health_port: u16,
     inference_routes: Option<String>,
     ocsf_enabled: Arc<std::sync::atomic::AtomicBool>,
+    forward_ports: Vec<u16>,
 ) -> Result<i32> {
     let (program, args) = command
         .split_first()
@@ -409,10 +413,22 @@ pub async fn run_sandbox(
         None
     };
 
+    // Spawn TCP port forwarders (after netns creation, before proxy + SSH server).
+    // Each forwarded port gets a listener on 0.0.0.0:<port> in the outer namespace,
+    // bridging connections to 127.0.0.1:<port> inside the sandbox network namespace.
+    #[cfg(target_os = "linux")]
+    if !forward_ports.is_empty() {
+        let fwd_netns_fd = netns.as_ref().and_then(NetworkNamespace::ns_fd);
+        tcp_forward::spawn_tcp_forwards(forward_ports, fwd_netns_fd).await;
+    }
+
     // On non-Linux, network namespace isolation is not supported
     #[cfg(not(target_os = "linux"))]
     #[allow(clippy::no_effect_underscore_binding)]
     let _netns: Option<()> = None;
+
+    #[cfg(not(target_os = "linux"))]
+    drop(forward_ports);
 
     // Shared PID: set after process spawn so the proxy can look up
     // the entrypoint process's /proc/net/tcp for identity binding.
@@ -727,6 +743,7 @@ pub async fn run_sandbox(
             .and_then(|v| v.parse().ok())
             .unwrap_or(10);
 
+        let poll_pid = entrypoint_pid.clone();
         tokio::spawn(async move {
             if let Err(e) = run_policy_poll_loop(
                 &poll_endpoint,
@@ -734,6 +751,7 @@ pub async fn run_sandbox(
                 &poll_engine,
                 poll_interval_secs,
                 &poll_ocsf_enabled,
+                poll_pid,
             )
             .await
             {
@@ -1846,6 +1864,7 @@ async fn run_policy_poll_loop(
     opa_engine: &Arc<OpaEngine>,
     interval_secs: u64,
     ocsf_enabled: &std::sync::atomic::AtomicBool,
+    entrypoint_pid: Arc<AtomicU32>,
 ) -> Result<()> {
     use crate::grpc_client::CachedOpenShellClient;
     use openshell_core::proto::PolicySource;
@@ -1862,6 +1881,7 @@ async fn run_policy_poll_loop(
     // Initialize revision from the first poll.
     match client.poll_settings(sandbox_id).await {
         Ok(result) => {
+            deliver_pending_signals(&result.pending_signals, &entrypoint_pid);
             current_config_revision = result.config_revision;
             current_policy_hash = result.policy_hash.clone();
             current_settings = result.settings;
@@ -1886,6 +1906,9 @@ async fn run_policy_poll_loop(
                 continue;
             }
         };
+
+        // Deliver any pending signals before checking config revision.
+        deliver_pending_signals(&result.pending_signals, &entrypoint_pid);
 
         if result.config_revision == current_config_revision {
             continue;
@@ -2013,6 +2036,42 @@ fn extract_bool_setting(
             setting_value::Value::BoolValue(b) => Some(*b),
             _ => None,
         })
+}
+
+/// Deliver pending signals from a poll response to the entrypoint process.
+fn deliver_pending_signals(signals: &[i32], entrypoint_pid: &AtomicU32) {
+    if signals.is_empty() {
+        return;
+    }
+    let pid = entrypoint_pid.load(Ordering::Acquire);
+    if pid == 0 {
+        warn!(
+            count = signals.len(),
+            "Pending signals received but entrypoint process not yet started"
+        );
+        return;
+    }
+    let Ok(raw_pid) = i32::try_from(pid) else {
+        warn!(pid, "Entrypoint PID exceeds i32 range, cannot deliver signals");
+        return;
+    };
+    for sig_num in signals {
+        match nix::sys::signal::Signal::try_from(*sig_num) {
+            Ok(sig) => {
+                match nix::sys::signal::kill(nix::unistd::Pid::from_raw(raw_pid), sig) {
+                    Ok(()) => {
+                        info!(pid, signal = %sig, "Pending signal delivered");
+                    }
+                    Err(e) => {
+                        warn!(pid, signal = %sig, error = %e, "Failed to deliver pending signal");
+                    }
+                }
+            }
+            Err(_) => {
+                warn!(signal = sig_num, "Ignoring invalid signal number");
+            }
+        }
+    }
 }
 
 /// Log individual setting changes between two snapshots.

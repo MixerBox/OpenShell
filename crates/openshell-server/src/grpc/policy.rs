@@ -174,6 +174,21 @@ pub(super) async fn handle_get_sandbox_config(
     let settings = merge_effective_settings(&global_settings, &sandbox_settings)?;
     let config_revision = compute_config_revision(policy.as_ref(), &settings, policy_source);
 
+    // Drain any pending signals queued by SignalSandbox RPC.
+    let pending_signals = state
+        .pending_signals
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .remove(&sandbox_id)
+        .unwrap_or_default();
+    if !pending_signals.is_empty() {
+        debug!(
+            sandbox_id = %sandbox_id,
+            count = pending_signals.len(),
+            "GetSandboxConfig: drained pending signals for supervisor poll"
+        );
+    }
+
     Ok(Response::new(GetSandboxConfigResponse {
         policy,
         version,
@@ -182,6 +197,7 @@ pub(super) async fn handle_get_sandbox_config(
         config_revision,
         policy_source: policy_source.into(),
         global_policy_version,
+        pending_signals,
     }))
 }
 

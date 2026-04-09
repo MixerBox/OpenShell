@@ -24,9 +24,10 @@ use openshell_core::proto::{
     ListSandboxesResponse, ProviderResponse, PushSandboxLogsRequest, PushSandboxLogsResponse,
     RejectDraftChunkRequest, RejectDraftChunkResponse, ReportPolicyStatusRequest,
     ReportPolicyStatusResponse, RevokeSshSessionRequest, RevokeSshSessionResponse, SandboxResponse,
-    SandboxStreamEvent, ServiceStatus, SubmitPolicyAnalysisRequest, SubmitPolicyAnalysisResponse,
-    UndoDraftChunkRequest, UndoDraftChunkResponse, UpdateConfigRequest, UpdateConfigResponse,
-    UpdateProviderRequest, WatchSandboxRequest, open_shell_server::OpenShell,
+    SandboxStreamEvent, ServiceStatus, SignalSandboxRequest, SignalSandboxResponse,
+    SubmitPolicyAnalysisRequest, SubmitPolicyAnalysisResponse, UndoDraftChunkRequest,
+    UndoDraftChunkResponse, UpdateConfigRequest, UpdateConfigResponse, UpdateProviderRequest,
+    WatchSandboxRequest, open_shell_server::OpenShell,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -84,6 +85,8 @@ const MAX_PROVIDER_TYPE_LEN: usize = 64;
 const MAX_PROVIDER_CREDENTIALS_ENTRIES: usize = 32;
 /// Maximum number of entries in the provider `config` map.
 const MAX_PROVIDER_CONFIG_ENTRIES: usize = 64;
+/// Maximum number of pending signals per sandbox before the queue rejects new entries.
+const MAX_PENDING_SIGNALS: usize = 64;
 
 // ---------------------------------------------------------------------------
 // Shared types (used by the policy/settings submodule)
@@ -382,6 +385,15 @@ impl OpenShell for OpenShellService {
         request: Request<GetDraftHistoryRequest>,
     ) -> Result<Response<GetDraftHistoryResponse>, Status> {
         policy::handle_get_draft_history(&self.state, request).await
+    }
+
+    // --- Signal delivery ---
+
+    async fn signal_sandbox(
+        &self,
+        request: Request<SignalSandboxRequest>,
+    ) -> Result<Response<SignalSandboxResponse>, Status> {
+        sandbox::handle_signal_sandbox(&self.state, request).await
     }
 }
 

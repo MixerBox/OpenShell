@@ -97,6 +97,11 @@ struct Args {
     #[arg(long, env = "OPENSHELL_HOST_GATEWAY_IP")]
     host_gateway_ip: Option<String>,
 
+    /// JSON-encoded pod spec overrides applied to all sandbox pods.
+    /// Use for cluster-level defaults like node affinity and tolerations.
+    #[arg(long, env = "OPENSHELL_SANDBOX_POD_OVERRIDES")]
+    sandbox_pod_overrides: Option<String>,
+
     /// Disable TLS entirely — listen on plaintext HTTP.
     /// Use this when the gateway sits behind a reverse proxy or tunnel
     /// (e.g. Cloudflare Tunnel) that terminates TLS at the edge.
@@ -186,6 +191,10 @@ async fn main() -> Result<()> {
 
     if let Some(ip) = args.host_gateway_ip {
         config = config.with_host_gateway_ip(ip);
+    }
+
+    if let Some(overrides) = args.sandbox_pod_overrides {
+        config = config.with_sandbox_pod_overrides(overrides);
     }
 
     if args.disable_tls {

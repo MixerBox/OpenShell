@@ -89,6 +89,8 @@ pub struct SandboxClient {
     /// When non-empty, sandbox pods get `hostAliases` entries mapping
     /// `host.docker.internal` and `host.openshell.internal` to this IP.
     host_gateway_ip: String,
+    /// JSON-encoded pod spec overrides applied to all sandbox pods.
+    sandbox_pod_overrides: String,
 }
 
 impl std::fmt::Debug for SandboxClient {
@@ -112,6 +114,7 @@ impl SandboxClient {
         ssh_handshake_skew_secs: u64,
         client_tls_secret_name: String,
         host_gateway_ip: String,
+        sandbox_pod_overrides: String,
     ) -> Result<Self, KubeError> {
         let mut config = match kube::Config::incluster() {
             Ok(c) => c,
@@ -134,6 +137,7 @@ impl SandboxClient {
             ssh_handshake_skew_secs,
             client_tls_secret_name,
             host_gateway_ip,
+            sandbox_pod_overrides,
         })
     }
 
@@ -230,6 +234,7 @@ impl SandboxClient {
             self.ssh_handshake_skew_secs(),
             &self.client_tls_secret_name,
             &self.host_gateway_ip,
+            &self.sandbox_pod_overrides,
         );
         let api = self.api();
 
@@ -898,6 +903,7 @@ fn sandbox_to_k8s_spec(
     ssh_handshake_skew_secs: u64,
     client_tls_secret_name: &str,
     host_gateway_ip: &str,
+    gateway_pod_overrides: &str,
 ) -> serde_json::Value {
     let mut root = serde_json::Map::new();
 
@@ -940,6 +946,7 @@ fn sandbox_to_k8s_spec(
                     client_tls_secret_name,
                     host_gateway_ip,
                     inject_workspace,
+                    gateway_pod_overrides,
                 ),
             );
             if !template.agent_socket.is_empty() {
@@ -984,6 +991,7 @@ fn sandbox_to_k8s_spec(
                 client_tls_secret_name,
                 host_gateway_ip,
                 inject_workspace,
+                gateway_pod_overrides,
             ),
         );
     }
@@ -1009,6 +1017,7 @@ fn sandbox_template_to_k8s(
     client_tls_secret_name: &str,
     host_gateway_ip: &str,
     inject_workspace: bool,
+    gateway_pod_overrides: &str,
 ) -> serde_json::Value {
     // The supervisor binary is always side-loaded from the node filesystem
     // via a hostPath volume, regardless of which sandbox image is used.
@@ -1132,6 +1141,18 @@ fn sandbox_template_to_k8s(
 
     let mut result = serde_json::Value::Object(template_value);
 
+    // Merge gateway-level pod overrides (cluster defaults like affinity/tolerations)
+    if !gateway_pod_overrides.is_empty() {
+        if let Ok(overrides) = serde_json::from_str::<serde_json::Value>(gateway_pod_overrides) {
+            merge_pod_overrides(&mut result, &overrides);
+        }
+    }
+
+    // Merge per-sandbox pod overrides (from SandboxTemplate.pod_spec_overrides)
+    if let Some(overrides) = struct_to_json(&template.pod_spec_overrides) {
+        merge_pod_overrides(&mut result, &overrides);
+    }
+
     // Always side-load the supervisor binary from the node filesystem
     apply_supervisor_sideload(&mut result);
 
@@ -1143,6 +1164,114 @@ fn sandbox_template_to_k8s(
     }
 
     result
+}
+
+/// Merge pod spec overrides into a pod template value.
+///
+/// The `template` has shape `{"spec": {...}, "metadata": {...}}`.
+/// The `overrides` has shape `{"affinity": ..., "tolerations": [...], "volumes": [...], "containers": [...]}`.
+///
+/// - Object fields (affinity): inserted or replaced
+/// - Array fields at spec level (tolerations, volumes): appended
+/// - `containers` array: matched by name, then array fields (envFrom, volumeMounts) are appended
+fn merge_pod_overrides(template: &mut serde_json::Value, overrides: &serde_json::Value) {
+    let Some(spec) = template.get_mut("spec").and_then(|s| s.as_object_mut()) else {
+        return;
+    };
+    let Some(override_obj) = overrides.as_object() else {
+        return;
+    };
+
+    for (key, value) in override_obj {
+        if key == "containers" {
+            // Special handling: merge container fields by name
+            merge_containers(spec, value);
+        } else if value.is_array() {
+            // Append array fields (tolerations, volumes, initContainers, etc.)
+            if let Some(existing) = spec.get_mut(key).and_then(|v| v.as_array_mut()) {
+                if let Some(new_items) = value.as_array() {
+                    existing.extend(new_items.iter().cloned());
+                }
+            } else {
+                spec.insert(key.clone(), value.clone());
+            }
+        } else {
+            // Insert or replace scalar/object fields (affinity, dnsPolicy, etc.)
+            spec.insert(key.clone(), value.clone());
+        }
+    }
+}
+
+/// Merge container overrides by matching on the `name` field.
+/// For matched containers, array fields (envFrom, volumeMounts, env) are appended;
+/// other fields are inserted or replaced.
+fn merge_containers(spec: &mut serde_json::Map<String, serde_json::Value>, override_containers: &serde_json::Value) {
+    let Some(existing_containers) = spec.get_mut("containers").and_then(|c| c.as_array_mut()) else {
+        return;
+    };
+    let Some(override_list) = override_containers.as_array() else {
+        return;
+    };
+
+    for oc in override_list {
+        let Some(oc_name) = oc.get("name").and_then(|n| n.as_str()) else {
+            continue;
+        };
+        // Find matching container by name
+        let Some(existing) = existing_containers.iter_mut().find(|c| {
+            c.get("name").and_then(|n| n.as_str()) == Some(oc_name)
+        }) else {
+            continue;
+        };
+        let Some(existing_obj) = existing.as_object_mut() else {
+            continue;
+        };
+        let Some(oc_obj) = oc.as_object() else {
+            continue;
+        };
+
+        for (key, value) in oc_obj {
+            if key == "name" {
+                continue; // Skip the name field itself
+            }
+            if key == "env" {
+                // Strategic merge for env: match by "name" field, replace if exists,
+                // append if new (same semantics as K8s strategic merge patch).
+                if let (Some(arr), Some(new_items)) = (
+                    existing_obj.get_mut(key).and_then(|v| v.as_array_mut()),
+                    value.as_array(),
+                ) {
+                    for new_item in new_items {
+                        let new_name = new_item.get("name").and_then(|n| n.as_str());
+                        if let Some(name) = new_name {
+                            if let Some(existing_item) = arr.iter_mut().find(|item| {
+                                item.get("name").and_then(|n| n.as_str()) == Some(name)
+                            }) {
+                                *existing_item = new_item.clone();
+                            } else {
+                                arr.push(new_item.clone());
+                            }
+                        } else {
+                            arr.push(new_item.clone());
+                        }
+                    }
+                } else {
+                    existing_obj.insert(key.clone(), value.clone());
+                }
+            } else if value.is_array() {
+                // Append other array fields (envFrom, volumeMounts, ports, etc.)
+                if let Some(arr) = existing_obj.get_mut(key).and_then(|v| v.as_array_mut()) {
+                    if let Some(new_items) = value.as_array() {
+                        arr.extend(new_items.iter().cloned());
+                    }
+                } else {
+                    existing_obj.insert(key.clone(), value.clone());
+                }
+            } else {
+                existing_obj.insert(key.clone(), value.clone());
+            }
+        }
+    }
 }
 
 fn container_resources(template: &SandboxTemplate, gpu: bool) -> Option<serde_json::Value> {
@@ -1815,6 +1944,7 @@ mod tests {
             "",
             "",
             true,
+            "",
         );
 
         assert_eq!(
@@ -1849,6 +1979,7 @@ mod tests {
             "",
             "",
             true,
+            "",
         );
 
         assert_eq!(
@@ -1879,6 +2010,7 @@ mod tests {
             "",
             "",
             true,
+            "",
         );
 
         assert_eq!(
@@ -1922,6 +2054,7 @@ mod tests {
             "",
             "",
             true,
+            "",
         );
 
         let limits = &pod_template["spec"]["containers"][0]["resources"]["limits"];
@@ -1949,6 +2082,7 @@ mod tests {
             "",
             "172.17.0.1",
             true,
+            "",
         );
 
         let host_aliases = pod_template["spec"]["hostAliases"]
@@ -1980,6 +2114,7 @@ mod tests {
             "",
             "",
             true,
+            "",
         );
 
         assert!(
@@ -2006,6 +2141,7 @@ mod tests {
             "my-tls-secret",
             "",
             true,
+            "",
         );
 
         let volumes = pod_template["spec"]["volumes"]
@@ -2151,6 +2287,7 @@ mod tests {
             "",
             "",
             false, // user provided custom VCTs
+            "",
         );
 
         // No init container should be present
