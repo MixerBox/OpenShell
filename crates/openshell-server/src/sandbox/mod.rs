@@ -909,14 +909,21 @@ fn sandbox_to_k8s_spec(
 
     // Determine early whether the user provided custom volumeClaimTemplates.
     // When they haven't, we inject a default workspace VCT and corresponding
-    // init container + volume mount so sandbox data persists.  We need this
-    // flag before building the podTemplate because the workspace persistence
-    // transforms are applied inside sandbox_template_to_k8s.
+    // init container + volume mount so sandbox data survives pod rescheduling.
+    //
+    // The caller can also explicitly opt out via
+    // SandboxTemplate.disable_workspace_persistence, which short-circuits the
+    // injection even when no custom VCT is provided. This is useful when the
+    // caller provides its own /sandbox backing via pod_spec_overrides (e.g.
+    // EFS) without also wanting to pass a VCT.
     let user_has_vct = spec
         .and_then(|s| s.template.as_ref())
-        .and_then(|t| struct_to_json(&t.volume_claim_templates))
+        .and_then(|t| extract_vct_array(t.volume_claim_templates.as_ref()))
         .is_some();
-    let inject_workspace = !user_has_vct;
+    let user_disabled_workspace = spec
+        .and_then(|s| s.template.as_ref())
+        .is_some_and(|t| t.disable_workspace_persistence);
+    let inject_workspace = !user_has_vct && !user_disabled_workspace;
 
     if let Some(spec) = spec {
         if !spec.log_level.is_empty() {
@@ -955,7 +962,9 @@ fn sandbox_to_k8s_spec(
                     serde_json::json!(template.agent_socket),
                 );
             }
-            if let Some(volume_templates) = struct_to_json(&template.volume_claim_templates) {
+            if let Some(volume_templates) =
+                extract_vct_array(template.volume_claim_templates.as_ref())
+            {
                 root.insert("volumeClaimTemplates".to_string(), volume_templates);
             }
         }
@@ -2337,6 +2346,96 @@ mod tests {
         assert!(
             !has_workspace_mount,
             "workspace mount must NOT be present when inject_workspace is false"
+        );
+    }
+
+    #[test]
+    fn workspace_persistence_skipped_when_disable_flag_set() {
+        let mut template = SandboxTemplate::default();
+        template.disable_workspace_persistence = true;
+
+        let mut spec = SandboxSpec::default();
+        spec.template = Some(template);
+
+        let k8s = sandbox_to_k8s_spec(
+            Some(&spec),
+            "openshell/sandbox:latest",
+            "",
+            "sandbox-id",
+            "sandbox-name",
+            "https://gateway.example.com",
+            "0.0.0.0:2222",
+            "secret",
+            300,
+            "",
+            "",
+            "",
+        );
+
+        // sandbox_to_k8s_spec returns {"spec": {...}}, so navigate via ["spec"]
+        let spec_obj = &k8s["spec"];
+
+        assert!(
+            spec_obj.get("volumeClaimTemplates").is_none(),
+            "volumeClaimTemplates must not be injected when disable flag is set"
+        );
+
+        let pod_template = &spec_obj["podTemplate"];
+        let init_containers = pod_template["spec"]["initContainers"].as_array();
+        if let Some(ics) = init_containers {
+            assert!(
+                ics.iter().all(|c| c["name"] != WORKSPACE_INIT_CONTAINER_NAME),
+                "workspace-init container must not be present when disable flag is set"
+            );
+        }
+
+        let agent_mounts = pod_template["spec"]["containers"][0]["volumeMounts"].as_array();
+        if let Some(mounts) = agent_mounts {
+            assert!(
+                mounts.iter().all(|m| m["name"] != WORKSPACE_VOLUME_NAME),
+                "workspace volume mount must not be present when disable flag is set"
+            );
+        }
+    }
+
+    #[test]
+    fn workspace_persistence_injected_by_default_when_no_disable_no_vct() {
+        let spec = SandboxSpec {
+            template: Some(SandboxTemplate::default()),
+            ..Default::default()
+        };
+
+        let k8s = sandbox_to_k8s_spec(
+            Some(&spec),
+            "openshell/sandbox:latest",
+            "",
+            "sandbox-id",
+            "sandbox-name",
+            "https://gateway.example.com",
+            "0.0.0.0:2222",
+            "secret",
+            300,
+            "",
+            "",
+            "",
+        );
+
+        // sandbox_to_k8s_spec returns {"spec": {...}}, so navigate via ["spec"]
+        let spec_obj = &k8s["spec"];
+
+        assert!(
+            spec_obj.get("volumeClaimTemplates").is_some(),
+            "default workspace VCT must be injected when disable flag is false and no VCT provided"
+        );
+        let pod_template = &spec_obj["podTemplate"];
+        let init_containers = pod_template["spec"]["initContainers"]
+            .as_array()
+            .expect("initContainers should exist");
+        assert!(
+            init_containers
+                .iter()
+                .any(|c| c["name"] == WORKSPACE_INIT_CONTAINER_NAME),
+            "default workspace-init container must be present"
         );
     }
 
