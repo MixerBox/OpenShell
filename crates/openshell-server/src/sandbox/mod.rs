@@ -2463,12 +2463,6 @@ mod tests {
         }
     }
 
-    fn string_value(s: &str) -> Value {
-        Value {
-            kind: Some(Kind::StringValue(s.to_string())),
-        }
-    }
-
     #[test]
     fn extract_vct_array_returns_none_for_none_input() {
         assert!(extract_vct_array(None).is_none());
