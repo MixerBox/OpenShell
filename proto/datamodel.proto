@@ -48,6 +48,12 @@ message SandboxTemplate {
   // Per-sandbox pod spec overrides (JSON). Merged into podTemplate.spec.
   // Use for volumes, envFrom, extra volumeMounts, etc.
   google.protobuf.Struct pod_spec_overrides = 10;
+  // Explicit opt-out for OpenShell's default workspace persistence.
+  // When true, OpenShell skips injecting the workspace PVC VCT, the
+  // workspace-init init container, and the /sandbox volume mount. Use this
+  // when the caller provides its own /sandbox backing (e.g. EFS) without
+  // also providing a custom volume_claim_templates.
+  bool disable_workspace_persistence = 11;
 }
 
 // Sandbox status captured from Kubernetes.

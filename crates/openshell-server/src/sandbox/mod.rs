@@ -909,14 +909,21 @@ fn sandbox_to_k8s_spec(
 
     // Determine early whether the user provided custom volumeClaimTemplates.
     // When they haven't, we inject a default workspace VCT and corresponding
-    // init container + volume mount so sandbox data persists.  We need this
-    // flag before building the podTemplate because the workspace persistence
-    // transforms are applied inside sandbox_template_to_k8s.
+    // init container + volume mount so sandbox data survives pod rescheduling.
+    //
+    // The caller can also explicitly opt out via
+    // SandboxTemplate.disable_workspace_persistence, which short-circuits the
+    // injection even when no custom VCT is provided. This is useful when the
+    // caller provides its own /sandbox backing via pod_spec_overrides (e.g.
+    // EFS) without also wanting to pass a VCT.
     let user_has_vct = spec
         .and_then(|s| s.template.as_ref())
-        .and_then(|t| struct_to_json(&t.volume_claim_templates))
+        .and_then(|t| extract_vct_array(t.volume_claim_templates.as_ref()))
         .is_some();
-    let inject_workspace = !user_has_vct;
+    let user_disabled_workspace = spec
+        .and_then(|s| s.template.as_ref())
+        .is_some_and(|t| t.disable_workspace_persistence);
+    let inject_workspace = !user_has_vct && !user_disabled_workspace;
 
     if let Some(spec) = spec {
         if !spec.log_level.is_empty() {
@@ -955,7 +962,9 @@ fn sandbox_to_k8s_spec(
                     serde_json::json!(template.agent_socket),
                 );
             }
-            if let Some(volume_templates) = struct_to_json(&template.volume_claim_templates) {
+            if let Some(volume_templates) =
+                extract_vct_array(template.volume_claim_templates.as_ref())
+            {
                 root.insert("volumeClaimTemplates".to_string(), volume_templates);
             }
         }
@@ -1407,6 +1416,35 @@ fn struct_to_json(input: &Option<prost_types::Struct>) -> Option<serde_json::Val
         map.insert(key.clone(), proto_value_to_json(value));
     }
     Some(serde_json::Value::Object(map))
+}
+
+/// Extract volumeClaimTemplates as a JSON array from a protobuf Struct.
+///
+/// Since google.protobuf.Struct can only represent a JSON object at the top
+/// level, we use a convention: the Struct must have a single "items" key
+/// containing a ListValue. This unwraps to a proper JSON array that matches
+/// the K8s CRD schema for volumeClaimTemplates.
+///
+/// - `None` input or an empty Struct → returns `None` (treat as "not provided")
+/// - Struct with a single `items` key whose value is a list → returns the list
+///   as a JSON array
+/// - Anything else → falls back to `struct_to_json` behaviour so existing
+///   callers do not silently break
+fn extract_vct_array(input: Option<&prost_types::Struct>) -> Option<serde_json::Value> {
+    let s = input?;
+    if s.fields.is_empty() {
+        return None;
+    }
+    if s.fields.len() == 1 {
+        if let Some(items) = s.fields.get("items") {
+            if let Some(prost_types::value::Kind::ListValue(list)) = &items.kind {
+                let values = list.values.iter().map(proto_value_to_json).collect();
+                return Some(serde_json::Value::Array(values));
+            }
+        }
+    }
+    // Unrecognized shape — preserve current behavior (object, will fail CRD validation)
+    struct_to_json(&Some(s.clone()))
 }
 
 fn proto_value_to_json(value: &prost_types::Value) -> serde_json::Value {
@@ -2309,5 +2347,169 @@ mod tests {
             !has_workspace_mount,
             "workspace mount must NOT be present when inject_workspace is false"
         );
+    }
+
+    #[test]
+    fn workspace_persistence_skipped_when_disable_flag_set() {
+        let mut template = SandboxTemplate::default();
+        template.disable_workspace_persistence = true;
+
+        let mut spec = SandboxSpec::default();
+        spec.template = Some(template);
+
+        let k8s = sandbox_to_k8s_spec(
+            Some(&spec),
+            "openshell/sandbox:latest",
+            "",
+            "sandbox-id",
+            "sandbox-name",
+            "https://gateway.example.com",
+            "0.0.0.0:2222",
+            "secret",
+            300,
+            "",
+            "",
+            "",
+        );
+
+        // sandbox_to_k8s_spec returns {"spec": {...}}, so navigate via ["spec"]
+        let spec_obj = &k8s["spec"];
+
+        assert!(
+            spec_obj.get("volumeClaimTemplates").is_none(),
+            "volumeClaimTemplates must not be injected when disable flag is set"
+        );
+
+        let pod_template = &spec_obj["podTemplate"];
+        let init_containers = pod_template["spec"]["initContainers"].as_array();
+        if let Some(ics) = init_containers {
+            assert!(
+                ics.iter().all(|c| c["name"] != WORKSPACE_INIT_CONTAINER_NAME),
+                "workspace-init container must not be present when disable flag is set"
+            );
+        }
+
+        let agent_mounts = pod_template["spec"]["containers"][0]["volumeMounts"].as_array();
+        if let Some(mounts) = agent_mounts {
+            assert!(
+                mounts.iter().all(|m| m["name"] != WORKSPACE_VOLUME_NAME),
+                "workspace volume mount must not be present when disable flag is set"
+            );
+        }
+    }
+
+    #[test]
+    fn workspace_persistence_injected_by_default_when_no_disable_no_vct() {
+        let spec = SandboxSpec {
+            template: Some(SandboxTemplate::default()),
+            ..Default::default()
+        };
+
+        let k8s = sandbox_to_k8s_spec(
+            Some(&spec),
+            "openshell/sandbox:latest",
+            "",
+            "sandbox-id",
+            "sandbox-name",
+            "https://gateway.example.com",
+            "0.0.0.0:2222",
+            "secret",
+            300,
+            "",
+            "",
+            "",
+        );
+
+        // sandbox_to_k8s_spec returns {"spec": {...}}, so navigate via ["spec"]
+        let spec_obj = &k8s["spec"];
+
+        assert!(
+            spec_obj.get("volumeClaimTemplates").is_some(),
+            "default workspace VCT must be injected when disable flag is false and no VCT provided"
+        );
+        let pod_template = &spec_obj["podTemplate"];
+        let init_containers = pod_template["spec"]["initContainers"]
+            .as_array()
+            .expect("initContainers should exist");
+        assert!(
+            init_containers
+                .iter()
+                .any(|c| c["name"] == WORKSPACE_INIT_CONTAINER_NAME),
+            "default workspace-init container must be present"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // extract_vct_array tests
+    // -----------------------------------------------------------------------
+
+    fn make_struct(fields: Vec<(&str, Value)>) -> Struct {
+        let mut s = Struct::default();
+        for (k, v) in fields {
+            s.fields.insert(k.to_string(), v);
+        }
+        s
+    }
+
+    fn list_value(values: Vec<Value>) -> Value {
+        Value {
+            kind: Some(Kind::ListValue(prost_types::ListValue { values })),
+        }
+    }
+
+    fn struct_value(s: Struct) -> Value {
+        Value {
+            kind: Some(Kind::StructValue(s)),
+        }
+    }
+
+    #[test]
+    fn extract_vct_array_returns_none_for_none_input() {
+        assert!(extract_vct_array(None).is_none());
+    }
+
+    #[test]
+    fn extract_vct_array_returns_none_for_empty_struct() {
+        let s = Struct::default();
+        assert!(extract_vct_array(Some(&s)).is_none());
+    }
+
+    #[test]
+    fn extract_vct_array_unwraps_items_list_to_json_array() {
+        let metadata = make_struct(vec![("name", string_value("workspace"))]);
+        let vct_entry = make_struct(vec![("metadata", struct_value(metadata))]);
+        let wrapped = make_struct(vec![("items", list_value(vec![struct_value(vct_entry)]))]);
+
+        let result = extract_vct_array(Some(&wrapped)).expect("should return Some");
+        let arr = result.as_array().expect("should be a JSON array");
+        assert_eq!(arr.len(), 1);
+        assert_eq!(
+            arr[0]["metadata"]["name"].as_str(),
+            Some("workspace"),
+            "inner VCT entry should round-trip through extract_vct_array"
+        );
+    }
+
+    #[test]
+    fn extract_vct_array_preserves_multiple_entries() {
+        let entry_a = make_struct(vec![("name", string_value("a"))]);
+        let entry_b = make_struct(vec![("name", string_value("b"))]);
+        let wrapped = make_struct(vec![(
+            "items",
+            list_value(vec![struct_value(entry_a), struct_value(entry_b)]),
+        )]);
+        let result = extract_vct_array(Some(&wrapped)).expect("should return Some");
+        let arr = result.as_array().expect("should be a JSON array");
+        assert_eq!(arr.len(), 2);
+        assert_eq!(arr[0]["name"].as_str(), Some("a"));
+        assert_eq!(arr[1]["name"].as_str(), Some("b"));
+    }
+
+    #[test]
+    fn extract_vct_array_falls_back_to_object_on_unrecognized_shape() {
+        let s = make_struct(vec![("foo", string_value("bar"))]);
+        let result = extract_vct_array(Some(&s)).expect("should return Some");
+        assert!(result.is_object(), "unrecognized shape should fall back to object");
+        assert_eq!(result["foo"].as_str(), Some("bar"));
     }
 }
