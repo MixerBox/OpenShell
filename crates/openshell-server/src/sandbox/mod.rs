@@ -1409,6 +1409,35 @@ fn struct_to_json(input: &Option<prost_types::Struct>) -> Option<serde_json::Val
     Some(serde_json::Value::Object(map))
 }
 
+/// Extract volumeClaimTemplates as a JSON array from a protobuf Struct.
+///
+/// Since google.protobuf.Struct can only represent a JSON object at the top
+/// level, we use a convention: the Struct must have a single "items" key
+/// containing a ListValue. This unwraps to a proper JSON array that matches
+/// the K8s CRD schema for volumeClaimTemplates.
+///
+/// - `None` input or an empty Struct → returns `None` (treat as "not provided")
+/// - Struct with a single `items` key whose value is a list → returns the list
+///   as a JSON array
+/// - Anything else → falls back to `struct_to_json` behaviour so existing
+///   callers do not silently break
+fn extract_vct_array(input: Option<&prost_types::Struct>) -> Option<serde_json::Value> {
+    let s = input?;
+    if s.fields.is_empty() {
+        return None;
+    }
+    if s.fields.len() == 1 {
+        if let Some(items) = s.fields.get("items") {
+            if let Some(prost_types::value::Kind::ListValue(list)) = &items.kind {
+                let values = list.values.iter().map(proto_value_to_json).collect();
+                return Some(serde_json::Value::Array(values));
+            }
+        }
+    }
+    // Unrecognized shape — preserve current behavior (object, will fail CRD validation)
+    struct_to_json(&Some(s.clone()))
+}
+
 fn proto_value_to_json(value: &prost_types::Value) -> serde_json::Value {
     match value.kind.as_ref() {
         Some(prost_types::value::Kind::NumberValue(num)) => serde_json::Number::from_f64(*num)
@@ -2309,5 +2338,85 @@ mod tests {
             !has_workspace_mount,
             "workspace mount must NOT be present when inject_workspace is false"
         );
+    }
+
+    // -----------------------------------------------------------------------
+    // extract_vct_array tests
+    // -----------------------------------------------------------------------
+
+    fn make_struct(fields: Vec<(&str, Value)>) -> Struct {
+        let mut s = Struct::default();
+        for (k, v) in fields {
+            s.fields.insert(k.to_string(), v);
+        }
+        s
+    }
+
+    fn list_value(values: Vec<Value>) -> Value {
+        Value {
+            kind: Some(Kind::ListValue(prost_types::ListValue { values })),
+        }
+    }
+
+    fn struct_value(s: Struct) -> Value {
+        Value {
+            kind: Some(Kind::StructValue(s)),
+        }
+    }
+
+    fn string_value(s: &str) -> Value {
+        Value {
+            kind: Some(Kind::StringValue(s.to_string())),
+        }
+    }
+
+    #[test]
+    fn extract_vct_array_returns_none_for_none_input() {
+        assert!(extract_vct_array(None).is_none());
+    }
+
+    #[test]
+    fn extract_vct_array_returns_none_for_empty_struct() {
+        let s = Struct::default();
+        assert!(extract_vct_array(Some(&s)).is_none());
+    }
+
+    #[test]
+    fn extract_vct_array_unwraps_items_list_to_json_array() {
+        let metadata = make_struct(vec![("name", string_value("workspace"))]);
+        let vct_entry = make_struct(vec![("metadata", struct_value(metadata))]);
+        let wrapped = make_struct(vec![("items", list_value(vec![struct_value(vct_entry)]))]);
+
+        let result = extract_vct_array(Some(&wrapped)).expect("should return Some");
+        let arr = result.as_array().expect("should be a JSON array");
+        assert_eq!(arr.len(), 1);
+        assert_eq!(
+            arr[0]["metadata"]["name"].as_str(),
+            Some("workspace"),
+            "inner VCT entry should round-trip through extract_vct_array"
+        );
+    }
+
+    #[test]
+    fn extract_vct_array_preserves_multiple_entries() {
+        let entry_a = make_struct(vec![("name", string_value("a"))]);
+        let entry_b = make_struct(vec![("name", string_value("b"))]);
+        let wrapped = make_struct(vec![(
+            "items",
+            list_value(vec![struct_value(entry_a), struct_value(entry_b)]),
+        )]);
+        let result = extract_vct_array(Some(&wrapped)).expect("should return Some");
+        let arr = result.as_array().expect("should be a JSON array");
+        assert_eq!(arr.len(), 2);
+        assert_eq!(arr[0]["name"].as_str(), Some("a"));
+        assert_eq!(arr[1]["name"].as_str(), Some("b"));
+    }
+
+    #[test]
+    fn extract_vct_array_falls_back_to_object_on_unrecognized_shape() {
+        let s = make_struct(vec![("foo", string_value("bar"))]);
+        let result = extract_vct_array(Some(&s)).expect("should return Some");
+        assert!(result.is_object(), "unrecognized shape should fall back to object");
+        assert_eq!(result["foo"].as_str(), Some("bar"));
     }
 }
